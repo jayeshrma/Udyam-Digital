@@ -1,10 +1,20 @@
-# 🚀 Accel UdyamOne — Project Udyam Digital
+# 🚀 Airtel UdyamOne — Project Udyam Digital
 ### *Making India's 6 Crore+ Small Businesses Go Digital in One Sitting*
 **Event:** Airtel SYNC Hackathon 2026 · **Track:** Enterprise Track A (*Project Udyam Digital*)
 
 ---
 
-## ⚡ 10-Second Quickstart (Zero External Dependencies Required!)
+## 🌐 Live Zero-Cold-Start Cloud Deployment (Vercel Edge + FastAPI)
+
+| Deliverable Artifact | Live Clickable Production URL |
+| :--- | :--- |
+| **⚡ Artifact #1 — Live Working Prototype** *(Advisor + CPQ + 12 KYC Cases + Tracker + Cockpit)* | **[https://udyam-digital-three.vercel.app/](https://udyam-digital-three.vercel.app/)** |
+| **📐 Artifact #2 — Solution Architecture Blueprint** *(Interactive Vector SVG + TMF ODA Flows)* | **[https://udyam-digital-three.vercel.app/deliverables/Architecture_Diagram.html](https://udyam-digital-three.vercel.app/deliverables/Architecture_Diagram.html)** |
+| **🔒 Artifact #4 — 1-Page DPDP Act, 2023 Privacy & Security Brief** *(CISO/DPO Statutory Note)* | **[https://udyam-digital-three.vercel.app/deliverables/Privacy_and_Security_Note.html](https://udyam-digital-three.vercel.app/deliverables/Privacy_and_Security_Note.html)** |
+
+---
+
+## ⚡ 10-Second Local Quickstart
 
 Our platform is engineered to run out-of-the-box on **any standard Python 3.9+ installation** with **zero `pip install` friction**:
 
