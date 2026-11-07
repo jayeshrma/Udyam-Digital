@@ -1,0 +1,971 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>System Architecture Blueprint — Airtel UdyamOne (Project Udyam Digital)</title>
+  <link rel="icon" type="image/svg+xml" href="/static/favicon.svg" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/static/favicon-32x32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="/static/favicon-16x16.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/static/apple-touch-icon.png" />
+  <link rel="shortcut icon" href="/static/favicon.ico" />
+  <style>
+    :root {
+      --airtel-red: #e40000;
+      --airtel-red-soft: #fef2f2;
+      --navy-900: #0f2744;
+      --navy-800: #1a365d;
+      --slate-800: #1e293b;
+      --slate-700: #334155;
+      --slate-600: #475569;
+      --slate-500: #64748b;
+      --slate-400: #94a3b8;
+      --slate-300: #cbd5e1;
+      --slate-200: #e2e8f0;
+      --slate-100: #f1f5f9;
+      --slate-50: #f8fafc;
+      --emerald-600: #059669;
+      --emerald-50: #ecfdf5;
+      --blue-600: #2563eb;
+      --blue-50: #eff6ff;
+      --amber-600: #d97706;
+      --amber-50: #fffbeb;
+      --purple-600: #7c3aed;
+      --purple-50: #f5f3ff;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Inter, sans-serif;
+      background: #f1f5f9;
+      color: var(--slate-900);
+      padding: 14px 18px 26px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .blueprint-shell {
+      max-width: 1580px;
+      margin: 0 auto;
+      background: #ffffff;
+      border-radius: 14px;
+      border: 1.5px solid var(--slate-300);
+      box-shadow: 0 12px 32px rgba(15, 39, 68, 0.08);
+      overflow: hidden;
+    }
+
+    /* Top Executive Blueprint Header */
+    .bp-header {
+      background: linear-gradient(135deg, #b80000 0%, #e40000 55%, #c80000 100%);
+      color: #ffffff;
+      padding: 14px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 2px solid #a30000;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .bp-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .bp-title-group h1 {
+      font-size: 17px;
+      font-weight: 800;
+      letter-spacing: -0.3px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .bp-title-group h1 span.accent {
+      color: #ff4d4d;
+    }
+
+    .bp-subtitle {
+      font-size: 11.5px;
+      color: #ffe4e6;
+      font-weight: 500;
+      margin-top: 2px;
+    }
+
+    /* Interactive Flow Filter Toolbar */
+    .bp-toolbar {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .flow-filter-btn {
+      background: rgba(255, 255, 255, 0.18);
+      border: 1px solid rgba(255, 255, 255, 0.35);
+      color: #ffffff;
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 11.5px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      font-family: inherit;
+    }
+
+    .flow-filter-btn:hover {
+      background: rgba(255, 255, 255, 0.28);
+      color: #ffffff;
+    }
+
+    .flow-filter-btn.active {
+      background: var(--airtel-red);
+      border-color: var(--airtel-red);
+      color: #ffffff;
+    }
+
+    .btn-print {
+      background: #ffffff;
+      color: #b80000;
+      border: none;
+      padding: 6px 13px;
+      border-radius: 6px;
+      font-size: 11.5px;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      margin-left: 6px;
+    }
+
+    /* Main Vector SVG Diagram Viewport */
+    .svg-canvas-container {
+      width: 100%;
+      background:
+        radial-gradient(#cbd5e1 1px, transparent 1px) 0 0 / 18px 18px,
+        #f8fafc;
+      border-bottom: 1px solid var(--slate-200);
+      padding: 10px 14px;
+      overflow-x: auto;
+    }
+
+    svg.arch-svg {
+      width: 100%;
+      min-width: 1260px;
+      height: auto;
+      display: block;
+    }
+
+    /* Animated Data Flow Pulses on Async/Event Wires */
+    @keyframes dashFlow {
+      to {
+        stroke-dashoffset: -28;
+      }
+    }
+
+    .wire-animated {
+      animation: dashFlow 1.4s linear infinite;
+    }
+
+    .node-group {
+      transition: opacity 0.25s ease;
+    }
+
+    .node-group:hover {
+      filter: drop-shadow(0 4px 10px rgba(15, 23, 42, 0.1));
+    }
+
+    /* Dimming classes when interactive flow filter is active */
+    svg.filter-cpq .dim-on-cpq,
+    svg.filter-kyc .dim-on-kyc,
+    svg.filter-oss .dim-on-oss,
+    svg.filter-ltv .dim-on-ltv {
+      opacity: 0.16;
+    }
+
+    /* Bottom Visual Engineering Infographics Strip (3 Visual Charts) */
+    .infographics-strip {
+      display: grid;
+      grid-template-columns: 1.1fr 1.25fr 0.95fr;
+      gap: 16px;
+      padding: 16px 22px 20px;
+      background: #ffffff;
+    }
+
+    .info-card {
+      border: 1px solid var(--slate-200);
+      border-radius: 10px;
+      padding: 15px 18px;
+      background: var(--slate-50);
+    }
+
+    .info-card-hdr {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .info-card-title {
+      font-size: 12.5px;
+      font-weight: 800;
+      color: var(--slate-900);
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+
+    .info-badge {
+      font-size: 10.5px;
+      font-weight: 700;
+      padding: 3px 9px;
+      border-radius: 5px;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    /* Infographic 1: Latency Waterfall Bars */
+    .bar-row {
+      margin-bottom: 11px;
+    }
+
+    .bar-row:last-child {
+      margin-bottom: 0;
+    }
+
+    .bar-meta {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      font-weight: 600;
+      margin-bottom: 4px;
+      color: var(--slate-700);
+    }
+
+    .bar-track {
+      height: 22px;
+      background: var(--slate-200);
+      border-radius: 5px;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+    }
+
+    .bar-seg {
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10.5px;
+      font-weight: 700;
+      color: #ffffff;
+      white-space: nowrap;
+      padding: 0 8px;
+    }
+
+    /* Infographic 2: Parallel Split-Order Gantt Timeline */
+    .gantt-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 9px;
+    }
+
+    .gantt-lane {
+      display: grid;
+      grid-template-columns: 98px 1fr;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .gantt-label {
+      font-weight: 700;
+      color: var(--slate-800);
+      font-size: 11.5px;
+      white-space: nowrap;
+    }
+
+    .gantt-timeline {
+      min-height: 26px;
+      background: #ffffff;
+      border: 1px solid var(--slate-200);
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      padding: 3px 6px;
+      overflow: hidden;
+    }
+
+    .gantt-pill {
+      padding: 3px 11px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 700;
+      color: #ffffff;
+      white-space: nowrap;
+      display: inline-flex;
+      align-items: center;
+      width: fit-content;
+      max-width: 100%;
+    }
+
+    /* Infographic 3: Legend & Telemetry Specs */
+    .legend-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 9px;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 11.5px;
+      font-weight: 600;
+      color: var(--slate-700);
+      background: #ffffff;
+      padding: 8px 10px;
+      border-radius: 6px;
+      border: 1px solid var(--slate-200);
+    }
+
+    @media print {
+      body {
+        background: #ffffff;
+        padding: 0;
+      }
+      .blueprint-shell {
+        box-shadow: none;
+        border: 1px solid #000;
+      }
+      .bp-toolbar {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="blueprint-shell">
+    <!-- Top Executive Blueprint Header -->
+    <header class="bp-header">
+      <div class="bp-brand">
+        <svg width="34" height="34" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect width="34" height="34" rx="8" fill="#E40000"/>
+          <path d="M9 22C9 15.5 13.5 10 19.5 10C22.5 10 25 11.5 25 14C25 17 21.5 18 17 19C13 20 10.5 21 9.5 24" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round"/>
+          <circle cx="19.5" cy="10" r="2" fill="#FFFFFF"/>
+          <circle cx="25" cy="14" r="2" fill="#FFFFFF"/>
+          <circle cx="9.5" cy="24" r="2.2" fill="#FFFFFF"/>
+        </svg>
+        <div class="bp-title-group">
+          <h1>AIRTEL <span class="accent">UDYAM-ONE</span> — SYSTEM ARCHITECTURE &amp; DATA FLOW BLUEPRINT</h1>
+          <div class="bp-subtitle">TM Forum ODA Reference Architecture · Neuro-Symbolic CPQ (TMF620) · DPDP Smart KYC · Split-Order BSS/OSS (TMF622)</div>
+        </div>
+      </div>
+
+      <div class="bp-toolbar">
+        <button class="flow-filter-btn active" onclick="highlightArchFlow('all', this)">Full Blueprint</button>
+        <button class="flow-filter-btn" onclick="highlightArchFlow('cpq', this)">①–③ CPQ &amp; Zero-GSTIN Pivot</button>
+        <button class="flow-filter-btn" onclick="highlightArchFlow('kyc', this)">④–⑥ Smart KYC &amp; DPDP Vault</button>
+        <button class="flow-filter-btn" onclick="highlightArchFlow('oss', this)">⑦–⑧ Split-Order Track A/B</button>
+        <button class="flow-filter-btn" onclick="highlightArchFlow('ltv', this)">⑨ LTV Rescue Co-Pilot</button>
+        <button class="btn-print" onclick="window.print()">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+          Export PDF
+        </button>
+      </div>
+    </header>
+
+    <!-- ===================================================================== -->
+    <!-- PRIMARY VECTOR ARCHITECTURE DIAGRAM (SVG 1540 x 830)                  -->
+    <!-- ===================================================================== -->
+    <div class="svg-canvas-container">
+      <svg id="archSvg" class="arch-svg" viewBox="0 0 1540 830" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <!-- Arrowhead Markers -->
+          <marker id="arrow-slate" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#334155"/>
+          </marker>
+          <marker id="arrow-red" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#e40000"/>
+          </marker>
+          <marker id="arrow-blue" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#2563eb"/>
+          </marker>
+          <marker id="arrow-green" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#059669"/>
+          </marker>
+          <marker id="arrow-amber" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#d97706"/>
+          </marker>
+          <marker id="arrow-purple" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#7c3aed"/>
+          </marker>
+
+          <!-- Database Cylinder Gradients -->
+          <linearGradient id="dbGradBlue" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#1e293b"/>
+            <stop offset="50%" stop-color="#334155"/>
+            <stop offset="100%" stop-color="#1e3a8a"/>
+          </linearGradient>
+          <linearGradient id="dbGradRed" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#991b1b"/>
+            <stop offset="50%" stop-color="#dc2626"/>
+            <stop offset="100%" stop-color="#7f1d1d"/>
+          </linearGradient>
+          <linearGradient id="dbGradGreen" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#065f46"/>
+            <stop offset="50%" stop-color="#059669"/>
+            <stop offset="100%" stop-color="#064e3b"/>
+          </linearGradient>
+        </defs>
+
+        <!-- ================================================================= -->
+        <!-- 1. ARCHITECTURAL SWIMLANE ZONES (BACKGROUND CONTAINERS)           -->
+        <!-- ================================================================= -->
+
+        <!-- ZONE 1: OMNICHANNEL EDGE (x=14..242, y=16..604) -->
+        <g class="dim-on-kyc dim-on-oss dim-on-ltv">
+          <rect x="14" y="16" width="228" height="588" rx="12" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5" stroke-dasharray="6,4"/>
+          <rect x="14" y="16" width="228" height="34" rx="12" fill="#fef2f2"/>
+          <text x="26" y="37" font-size="11.5" font-weight="800" fill="#b80000" letter-spacing="0.3">1. OMNICHANNEL EDGE (10 LANGS)</text>
+        </g>
+
+        <!-- ZONE 2: API GATEWAY / INGRESS (x=282..398, y=16..604) -->
+        <g class="dim-on-ltv">
+          <rect x="282" y="16" width="116" height="588" rx="12" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.5" stroke-dasharray="6,4"/>
+          <rect x="282" y="16" width="116" height="34" rx="12" fill="#f1f5f9"/>
+          <text x="340" y="37" font-size="11.5" font-weight="800" fill="#334155" text-anchor="middle" letter-spacing="0.3">2. API INGRESS</text>
+        </g>
+
+        <!-- ZONE 3: NEURO-SYMBOLIC ADVISOR & DETERMINISTIC CPQ (x=444..968, y=16..298) -->
+        <g class="dim-on-kyc dim-on-oss dim-on-ltv">
+          <rect x="444" y="16" width="524" height="282" rx="12" fill="#f8fbff" stroke="#93c5fd" stroke-width="1.5"/>
+          <rect x="444" y="16" width="524" height="34" rx="12" fill="#eff6ff"/>
+          <text x="460" y="37" font-size="11.5" font-weight="800" fill="#1d4ed8" letter-spacing="0.3">3. NEURO-SYMBOLIC ADVISOR &amp; CPQ ENGINE (TMF620)</text>
+          <rect x="854" y="23" width="100" height="21" rx="5" fill="#dbeafe"/>
+          <text x="904" y="37" font-size="10.5" font-weight="800" fill="#1e40af" text-anchor="middle">SLA: &lt; 2.0s</text>
+        </g>
+
+        <!-- ZONE 4: DPDP ACT 2023 SMART KYC & FORENSIC PIPELINE (x=444..968, y=322..604) -->
+        <g class="dim-on-cpq dim-on-oss dim-on-ltv">
+          <rect x="444" y="322" width="524" height="282" rx="12" fill="#f4fdf9" stroke="#6ee7b7" stroke-width="1.5"/>
+          <rect x="444" y="322" width="524" height="34" rx="12" fill="#ecfdf5"/>
+          <text x="460" y="343" font-size="11.5" font-weight="800" fill="#047857" letter-spacing="0.3">4. DPDP SMART KYC &amp; 6-STAGE FORENSICS</text>
+          <rect x="836" y="329" width="118" height="21" rx="5" fill="#d1fae5"/>
+          <text x="895" y="343" font-size="10.5" font-weight="800" fill="#065f46" text-anchor="middle">SLA: &lt; 60s Verified</text>
+        </g>
+
+        <!-- ZONE 5: SPLIT-ORDER BSS/OSS ORCHESTRATION (x=1026..1526, y=16..436) -->
+        <g class="dim-on-cpq dim-on-kyc dim-on-ltv">
+          <rect x="1026" y="16" width="500" height="420" rx="12" fill="#fffdf7" stroke="#fcd34d" stroke-width="1.5"/>
+          <rect x="1026" y="16" width="500" height="34" rx="12" fill="#fffbeb"/>
+          <text x="1042" y="37" font-size="11.5" font-weight="800" fill="#b45309" letter-spacing="0.3">5. SPLIT-ORDER BSS/OSS &amp; BILLING (TMF622)</text>
+          <rect x="1408" y="23" width="104" height="21" rx="5" fill="#fef3c7"/>
+          <text x="1460" y="37" font-size="10.5" font-weight="800" fill="#92400e" text-anchor="middle">0 Chase Calls</text>
+        </g>
+
+        <!-- ZONE 6: SALES & PARTNER LTV PROPENSITY CO-PILOT (x=1026..1526, y=448..604) -->
+        <g class="dim-on-cpq dim-on-kyc dim-on-oss">
+          <rect x="1026" y="448" width="500" height="156" rx="12" fill="#faf7ff" stroke="#c4b5fd" stroke-width="1.5"/>
+          <rect x="1026" y="448" width="500" height="32" rx="12" fill="#f5f3ff"/>
+          <text x="1042" y="468" font-size="11.5" font-weight="800" fill="#6d28d9" letter-spacing="0.3">6. LTV PROPENSITY CO-PILOT &amp; RESCUE ENGINE (4,632 LEADS)</text>
+        </g>
+
+        <!-- ZONE 7: DATA TIER & GOVERNMENT REGISTRY STORAGE (x=14..1526, y=624..814) -->
+        <g>
+          <rect x="14" y="624" width="1512" height="190" rx="12" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.5"/>
+          <text x="32" y="648" font-size="11.5" font-weight="800" fill="#334155" letter-spacing="0.5">7. DATA PERSISTENCE, CRYPTOGRAPHIC VAULT &amp; LIVE REGISTRY TIER</text>
+        </g>
+
+        <!-- ================================================================= -->
+        <!-- 2. ORTHOGONAL WIRES & CONNECTOR PATHS                             -->
+        <!-- ================================================================= -->
+
+        <!-- Edge Touchpoints -> Collector Bus at x=258 -> API Gateway (292, 315) -->
+        <g class="dim-on-kyc dim-on-oss dim-on-ltv">
+          <path d="M 230 116 H 258 V 526 H 230" fill="none" stroke="#64748b" stroke-width="2.2"/>
+          <path d="M 230 252 H 258" fill="none" stroke="#64748b" stroke-width="2.2"/>
+          <path d="M 230 388 H 258" fill="none" stroke="#64748b" stroke-width="2.2"/>
+          <path d="M 258 315 H 290" fill="none" stroke="#e40000" stroke-width="2.5" marker-end="url(#arrow-red)"/>
+          <!-- Callout ① -->
+          <circle cx="272" cy="292" r="11" fill="#e40000"/>
+          <text x="272" y="296" font-size="11" font-weight="800" fill="#ffffff" text-anchor="middle">1</text>
+        </g>
+
+        <!-- API Gateway (388, 220) -> LLM Intent Parser (458, 108) -->
+        <g class="dim-on-kyc dim-on-oss dim-on-ltv">
+          <path d="M 388 220 H 420 V 108 H 456" fill="none" stroke="#2563eb" stroke-width="2.3" marker-end="url(#arrow-blue)"/>
+          <!-- Clean Wire Tag in Corridor 2->3 -->
+          <rect x="400" y="148" width="42" height="32" rx="5" fill="#eff6ff" stroke="#93c5fd"/>
+          <text x="421" y="162" font-size="9.5" font-weight="800" fill="#1d4ed8" text-anchor="middle">JSON</text>
+          <text x="421" y="174" font-size="9.5" font-weight="800" fill="#1d4ed8" text-anchor="middle">Intent</text>
+
+          <!-- LLM Intent Parser (656, 108) -> Deterministic CPQ Engine (698, 108) -->
+          <path d="M 656 108 H 696" fill="none" stroke="#2563eb" stroke-width="2.3" marker-end="url(#arrow-blue)"/>
+          <circle cx="676" cy="86" r="11" fill="#2563eb"/>
+          <text x="676" y="90" font-size="11" font-weight="800" fill="#ffffff" text-anchor="middle">2</text>
+
+          <!-- CPQ Engine (826, 156) -> Decision Diamond (530, 184) -->
+          <path d="M 826 156 V 170 H 530 V 182" fill="none" stroke="#334155" stroke-width="2.1" marker-end="url(#arrow-slate)"/>
+
+          <!-- Diamond (600, 232) -> Udyam Lite Auto-Pivot (636, 232) -->
+          <path d="M 600 232 H 634" fill="none" stroke="#059669" stroke-width="2.3" marker-end="url(#arrow-green)"/>
+          <text x="615" y="223" font-size="10.5" font-weight="800" fill="#059669" text-anchor="middle">No</text>
+
+          <!-- Udyam Lite Pivot (780, 232) -> TCO & GIS Gate (816, 232) -->
+          <path d="M 780 232 H 814" fill="none" stroke="#059669" stroke-width="2.3" marker-end="url(#arrow-green)"/>
+          <circle cx="797" cy="208" r="11" fill="#059669"/>
+          <text x="797" y="212" font-size="11" font-weight="800" fill="#ffffff" text-anchor="middle">3</text>
+
+          <!-- Diamond Yes Branch (530, 278) -> Bottom-Left of TCO & GIS Gate (848, 278) -->
+          <path d="M 530 278 V 290 H 848 V 280" fill="none" stroke="#2563eb" stroke-width="1.9" stroke-dasharray="5,3" marker-end="url(#arrow-blue)"/>
+          <text x="508" y="290" font-size="10.5" font-weight="800" fill="#2563eb">Yes</text>
+        </g>
+
+        <!-- Zone 3 Outgoing (916, 278) -> Zone 4 DPDP Consent Gate (556, 362) -->
+        <g class="dim-on-oss dim-on-ltv">
+          <path d="M 916 278 V 310 H 556 V 360" fill="none" stroke="#059669" stroke-width="2.3" marker-end="url(#arrow-green)"/>
+          <rect x="658" y="299" width="148" height="21" rx="5" fill="#ecfdf5" stroke="#6ee7b7"/>
+          <text x="732" y="313" font-size="10.5" font-weight="800" fill="#047857" text-anchor="middle">④ Cart + 3/4 Doc Spec</text>
+        </g>
+
+        <!-- Inside Zone 4 (DPDP Smart KYC Pipeline — Clean Z-Order Flow) -->
+        <g class="dim-on-cpq dim-on-oss dim-on-ltv">
+          <!-- DPDP Consent (656, 408) -> Vision OCR (698, 408) -->
+          <path d="M 656 408 H 696" fill="none" stroke="#059669" stroke-width="2.3" marker-end="url(#arrow-green)"/>
+          <circle cx="676" cy="386" r="11" fill="#059669"/>
+          <text x="676" y="390" font-size="11" font-weight="800" fill="#ffffff" text-anchor="middle">5</text>
+
+          <!-- Vision OCR (826, 456) -> O/0 Healer & Mod-36 (572, 486) -->
+          <path d="M 826 456 V 471 H 572 V 484" fill="none" stroke="#059669" stroke-width="2.1" marker-end="url(#arrow-green)"/>
+
+          <!-- O/0 Healer & Mod-36 (686, 538) -> Remote Aadhaar e-Sign (728, 538) -->
+          <path d="M 686 538 H 726" fill="none" stroke="#059669" stroke-width="2.3" marker-end="url(#arrow-green)"/>
+          <circle cx="706" cy="516" r="11" fill="#059669"/>
+          <text x="706" y="520" font-size="11" font-weight="800" fill="#ffffff" text-anchor="middle">6</text>
+        </g>
+
+        <!-- Zone 4 Remote Aadhaar e-Sign (954, 538) -> Zone 5 Split-Order Orchestrator (1040, 225) -->
+        <g class="dim-on-cpq dim-on-ltv">
+          <path d="M 954 538 H 997 V 225 H 1038" fill="none" stroke="#d97706" stroke-width="2.5" class="wire-animated" stroke-dasharray="7,4" marker-end="url(#arrow-amber)"/>
+          <!-- Compact 2-Line Pill inside the Corridor 4->5 -->
+          <rect x="970" y="356" width="54" height="34" rx="5" fill="#fffbeb" stroke="#fcd34d"/>
+          <text x="997" y="371" font-size="9.5" font-weight="800" fill="#b45309" text-anchor="middle">⑦ KYC</text>
+          <text x="997" y="384" font-size="9.5" font-weight="800" fill="#b45309" text-anchor="middle">Token</text>
+        </g>
+
+        <!-- Inside Zone 5 (Split-Order BSS/OSS Orchestration) -->
+        <g class="dim-on-cpq dim-on-kyc dim-on-ltv">
+          <!-- Split-Order Orchestrator (1180, 165) -> Track A (1212, 114) -->
+          <path d="M 1180 165 H 1196 V 114 H 1210" fill="none" stroke="#059669" stroke-width="2.5" marker-end="url(#arrow-green)"/>
+          <!-- Split-Order Orchestrator (1180, 242) -> Track B (1212, 242) -->
+          <path d="M 1180 242 H 1210" fill="none" stroke="#2563eb" stroke-width="2.5" marker-end="url(#arrow-blue)"/>
+
+          <!-- Track A & Track B -> Single Bill Engine (TMF666) -->
+          <path d="M 1510 114 H 1519 V 374 H 1512" fill="none" stroke="#059669" stroke-width="2.1" stroke-dasharray="5,3" marker-end="url(#arrow-slate)"/>
+          <path d="M 1360 298 V 322" fill="none" stroke="#334155" stroke-width="2.3" marker-end="url(#arrow-slate)"/>
+          <circle cx="1338" cy="310" r="10.5" fill="#d97706"/>
+          <text x="1338" y="314" font-size="10.5" font-weight="800" fill="#ffffff" text-anchor="middle">8</text>
+        </g>
+
+        <!-- Inside Zone 6 (Sales & Partner LTV Propensity Co-Pilot) -->
+        <g class="dim-on-cpq dim-on-kyc dim-on-oss">
+          <path d="M 1262 540 H 1296" fill="none" stroke="#7c3aed" stroke-width="2.3" marker-end="url(#arrow-purple)"/>
+          <circle cx="1279" cy="518" r="10.5" fill="#7c3aed"/>
+          <text x="1279" y="522" font-size="10.5" font-weight="800" fill="#ffffff" text-anchor="middle">9</text>
+        </g>
+
+        <!-- Clean Vertical Database Lookup Wires (Zero Wire Crossings) -->
+        <path d="M 340 500 V 612 H 150 V 658" fill="none" stroke="#94a3b8" stroke-width="1.8" stroke-dasharray="4,4" class="wire-animated dim-on-kyc dim-on-oss dim-on-ltv"/>
+        <path d="M 500 588 V 658" fill="none" stroke="#10b981" stroke-width="2" stroke-dasharray="4,4" class="wire-animated dim-on-cpq dim-on-oss dim-on-ltv"/>
+        <path d="M 640 588 V 612 H 770 V 658" fill="none" stroke="#10b981" stroke-width="2" stroke-dasharray="4,4" class="wire-animated dim-on-cpq dim-on-oss dim-on-ltv"/>
+        <path d="M 880 588 V 612 H 1065 V 658" fill="none" stroke="#38bdf8" stroke-width="2" stroke-dasharray="4,4" class="wire-animated dim-on-cpq dim-on-oss dim-on-ltv"/>
+        <path d="M 1150 590 V 612 H 1370 V 658" fill="none" stroke="#a78bfa" stroke-width="2" stroke-dasharray="4,4" class="wire-animated dim-on-cpq dim-on-kyc dim-on-oss"/>
+
+        <!-- ================================================================= -->
+        <!-- 3. EXPANDED ARCHITECTURAL NODES, GATEWAYS, DIAMONDS & CYLINDERS   -->
+        <!-- ================================================================= -->
+
+        <!-- ================= ZONE 1 NODES (EXPANDED TO FILL VERTICAL SPACE) = -->
+        <g class="node-group dim-on-kyc dim-on-oss dim-on-ltv">
+          <!-- Node 1A: Smartphone PWA (y=62..174, h=112) -->
+          <rect x="24" y="62" width="206" height="112" rx="10" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.6"/>
+          <rect x="36" y="78" width="36" height="36" rx="8" fill="#fef2f2"/>
+          <rect x="48" y="84" width="12" height="24" rx="2" fill="none" stroke="#e40000" stroke-width="2.2"/>
+          <text x="82" y="95" font-size="13.5" font-weight="800" fill="#0f2744">Smartphone PWA</text>
+          <text x="82" y="113" font-size="11" font-weight="600" fill="#475569">Self-Serve 5-Tab Mobile UI</text>
+          <text x="82" y="129" font-size="10.5" font-weight="600" fill="#64748b">Adaptive 380px Viewport</text>
+          <rect x="82" y="140" width="114" height="22" rx="5" fill="#f1f5f9"/>
+          <text x="139" y="155" font-size="10.5" font-weight="700" fill="#334155" text-anchor="middle">HTTPS / TLS 1.3</text>
+
+          <!-- Node 1B: WhatsApp Business Bot (y=196..308, h=112) -->
+          <rect x="24" y="196" width="206" height="112" rx="10" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.6"/>
+          <rect x="36" y="212" width="36" height="36" rx="8" fill="#ecfdf5"/>
+          <circle cx="54" cy="230" r="10" fill="none" stroke="#059669" stroke-width="2.2"/>
+          <text x="82" y="229" font-size="13.5" font-weight="800" fill="#0f2744">WhatsApp Bot</text>
+          <text x="82" y="247" font-size="11" font-weight="600" fill="#475569">Voice Note + 1-Tap Quote</text>
+          <text x="82" y="263" font-size="10.5" font-weight="600" fill="#64748b">Remote e-Sign Magic Link</text>
+          <rect x="82" y="274" width="124" height="22" rx="5" fill="#ecfdf5"/>
+          <text x="144" y="289" font-size="10.5" font-weight="700" fill="#047857" text-anchor="middle">Cloud Webhook API</text>
+
+          <!-- Node 1C: Bhashini Voice AI (y=330..442, h=112) -->
+          <rect x="24" y="330" width="206" height="112" rx="10" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.6"/>
+          <rect x="36" y="346" width="36" height="36" rx="8" fill="#eff6ff"/>
+          <path d="M47 364 v-6 M54 370 v-16 M61 364 v-6" stroke="#2563eb" stroke-width="2.4" stroke-linecap="round"/>
+          <text x="82" y="363" font-size="13.5" font-weight="800" fill="#0f2744">Bhashini Voice AI</text>
+          <text x="82" y="381" font-size="11" font-weight="600" fill="#475569">10-Language ASR / TTS</text>
+          <text x="82" y="397" font-size="10.5" font-weight="600" fill="#64748b">Hands-Free Shopkeeper NLU</text>
+          <rect x="82" y="408" width="122" height="22" rx="5" fill="#eff6ff"/>
+          <text x="143" y="423" font-size="10.5" font-weight="700" fill="#1d4ed8" text-anchor="middle">Audio Stream gRPC</text>
+
+          <!-- Node 1D: Partner Phygital QR (y=464..576, h=112) -->
+          <rect x="24" y="464" width="206" height="112" rx="10" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.6"/>
+          <rect x="36" y="480" width="36" height="36" rx="8" fill="#fffbeb"/>
+          <rect x="45" y="489" width="8" height="8" fill="none" stroke="#d97706" stroke-width="2"/>
+          <rect x="55" y="499" width="8" height="8" fill="none" stroke="#d97706" stroke-width="2"/>
+          <text x="82" y="497" font-size="13.5" font-weight="800" fill="#0f2744">Partner Phygital QR</text>
+          <text x="82" y="515" font-size="11" font-weight="600" fill="#475569">Assisted Last-Mile KYC</text>
+          <text x="82" y="531" font-size="10.5" font-weight="600" fill="#64748b">Zero Channel Conflict</text>
+          <rect x="82" y="542" width="124" height="22" rx="5" fill="#fffbeb"/>
+          <text x="144" y="557" font-size="10.5" font-weight="700" fill="#b45309" text-anchor="middle">Dealer Attribution</text>
+        </g>
+
+        <!-- ================= ZONE 2 NODE (EXPANDED API GATEWAY) ============ -->
+        <g class="node-group dim-on-ltv">
+          <rect x="292" y="130" width="96" height="370" rx="10" fill="#ffffff" stroke="#64748b" stroke-width="2"/>
+          <circle cx="340" cy="182" r="22" fill="#eff6ff" stroke="#e40000" stroke-width="2.2"/>
+          <path d="M330 182 h20 M340 172 v20" stroke="#e40000" stroke-width="2.2"/>
+          <text x="340" y="230" font-size="13.5" font-weight="800" fill="#0f2744" text-anchor="middle">API</text>
+          <text x="340" y="248" font-size="13.5" font-weight="800" fill="#0f2744" text-anchor="middle">Gateway</text>
+          <text x="340" y="282" font-size="11" font-weight="600" fill="#475569" text-anchor="middle">OAuth2 / JWT</text>
+          <text x="340" y="304" font-size="11" font-weight="600" fill="#475569" text-anchor="middle">Rate Limiter</text>
+          <text x="340" y="326" font-size="11" font-weight="600" fill="#475569" text-anchor="middle">TLS 1.3 Edge</text>
+          <text x="340" y="348" font-size="11" font-weight="600" fill="#475569" text-anchor="middle">TMF Router</text>
+          <rect x="302" y="384" width="76" height="24" rx="5" fill="#e40000"/>
+          <text x="340" y="400" font-size="10.5" font-weight="800" fill="#ffffff" text-anchor="middle">REST / WS</text>
+          <rect x="302" y="420" width="76" height="24" rx="5" fill="#f1f5f9" stroke="#cbd5e1"/>
+          <text x="340" y="436" font-size="10" font-weight="700" fill="#475569" text-anchor="middle">Port 443</text>
+        </g>
+
+        <!-- ================= ZONE 3 NODES (EXPANDED CPQ ENGINE) ============ -->
+        <g class="node-group dim-on-kyc dim-on-oss dim-on-ltv">
+          <!-- Node 3A: LLM Intent Parser (x=458..656, y=58..156, h=98) -->
+          <rect x="458" y="58" width="198" height="98" rx="10" fill="#ffffff" stroke="#60a5fa" stroke-width="1.6"/>
+          <text x="472" y="82" font-size="13.5" font-weight="800" fill="#0f2744">LLM Intent Parser</text>
+          <text x="472" y="101" font-size="11" font-weight="600" fill="#475569">Extracts segment, staff,</text>
+          <text x="472" y="117" font-size="11" font-weight="600" fill="#475569">sites, city_tier &amp; tools</text>
+          <rect x="472" y="126" width="144" height="21" rx="5" fill="#eff6ff"/>
+          <text x="544" y="140" font-size="10.5" font-weight="700" fill="#1d4ed8" text-anchor="middle">Neuro-Symbolic NLU</text>
+
+          <!-- Node 3B: Deterministic CPQ Rule Engine (x=698..954, y=58..156, h=98) -->
+          <rect x="698" y="58" width="256" height="98" rx="10" fill="#ffffff" stroke="#2563eb" stroke-width="2"/>
+          <text x="712" y="82" font-size="13.5" font-weight="800" fill="#0f2744">Deterministic CPQ Engine</text>
+          <text x="712" y="101" font-size="11" font-weight="600" fill="#475569">Enforces city_tier, min_staff, sites</text>
+          <text x="712" y="117" font-size="11" font-weight="600" fill="#475569">&amp; SKU dependency graph (P01–P25)</text>
+          <rect x="712" y="126" width="172" height="21" rx="5" fill="#dbeafe"/>
+          <text x="798" y="140" font-size="10.5" font-weight="800" fill="#1e40af" text-anchor="middle">0% Hallucinated Pricing</text>
+
+          <!-- Decision Diamond: Has Active GSTIN? (center 530, 231) -->
+          <polygon points="530,184 600,231 530,278 460,231" fill="#fffbeb" stroke="#d97706" stroke-width="2.2"/>
+          <text x="530" y="227" font-size="11" font-weight="800" fill="#92400e" text-anchor="middle">Has Active</text>
+          <text x="530" y="242" font-size="11" font-weight="800" fill="#92400e" text-anchor="middle">GSTIN?</text>
+
+          <!-- Node 3C: Udyam Lite Auto-Pivot (x=636..780, y=184..278, h=94) -->
+          <rect x="636" y="184" width="144" height="94" rx="9" fill="#ecfdf5" stroke="#059669" stroke-width="1.6"/>
+          <text x="708" y="208" font-size="12.5" font-weight="800" fill="#065f46" text-anchor="middle">Udyam Lite Pivot</text>
+          <text x="708" y="226" font-size="10.5" font-weight="600" fill="#047857" text-anchor="middle">Filters to 15 Non-GST</text>
+          <text x="708" y="242" font-size="10.5" font-weight="600" fill="#047857" text-anchor="middle">SKUs (P15 &rarr; P18)</text>
+          <rect x="652" y="250" width="112" height="19" rx="4" fill="#d1fae5"/>
+          <text x="708" y="263" font-size="10" font-weight="800" fill="#059669" text-anchor="middle">Waives GST Doc</text>
+
+          <!-- Node 3D: TCO & GIS Feasibility Check (x=816..954, y=184..278, h=94) -->
+          <rect x="816" y="184" width="138" height="94" rx="9" fill="#ffffff" stroke="#64748b" stroke-width="1.6"/>
+          <text x="885" y="208" font-size="12.5" font-weight="800" fill="#0f2744" text-anchor="middle">TCO &amp; GIS Gate</text>
+          <text x="885" y="226" font-size="10.5" font-weight="600" fill="#475569" text-anchor="middle">Saves 24–28% TCO</text>
+          <text x="885" y="242" font-size="10.5" font-weight="600" fill="#475569" text-anchor="middle">No Fibre &rarr; P04 5G</text>
+          <rect x="831" y="250" width="108" height="19" rx="4" fill="#eff6ff"/>
+          <text x="885" y="263" font-size="10" font-weight="800" fill="#2563eb" text-anchor="middle">Defer Bill 60d</text>
+        </g>
+
+        <!-- ================= ZONE 4 NODES (EXPANDED SMART KYC PIPELINE) ==== -->
+        <g class="node-group dim-on-cpq dim-on-oss dim-on-ltv">
+          <!-- Node 4A: DPDP Consent & Minimisation (Top-Left: x=458..656, y=362..456, h=94) -->
+          <rect x="458" y="362" width="198" height="94" rx="10" fill="#ffffff" stroke="#10b981" stroke-width="1.6"/>
+          <text x="472" y="386" font-size="13.5" font-weight="800" fill="#0f2744">DPDP Consent Gate</text>
+          <text x="472" y="405" font-size="11" font-weight="600" fill="#475569">Vernacular Notice · PII Mask</text>
+          <text x="472" y="421" font-size="11" font-weight="600" fill="#475569">Data Minimisation Enforced</text>
+          <rect x="472" y="429" width="132" height="19" rx="4" fill="#d1fae5"/>
+          <text x="538" y="442" font-size="10" font-weight="800" fill="#065f46" text-anchor="middle">DPDP Act, 2023</text>
+
+          <!-- Node 4B: Vision OCR & Blur/Skew Detector (Top-Right: x=698..954, y=362..456, h=94) -->
+          <rect x="698" y="362" width="256" height="94" rx="10" fill="#ffffff" stroke="#10b981" stroke-width="1.6"/>
+          <text x="712" y="386" font-size="13.5" font-weight="800" fill="#0f2744">Vision OCR &amp; Image Forensics</text>
+          <text x="712" y="405" font-size="11" font-weight="600" fill="#475569">Laplacian Blur/Skew Check (K02/K04)</text>
+          <text x="712" y="421" font-size="11" font-weight="600" fill="#475569">Bill Recency &le; 90d Gate (Blocks K11)</text>
+          <rect x="712" y="429" width="164" height="19" rx="4" fill="#ecfdf5"/>
+          <text x="794" y="442" font-size="10" font-weight="700" fill="#047857" text-anchor="middle">4-Doc Parallel Extraction</text>
+
+          <!-- Node 4C: O/0 Normalizer & Modulo-36 Engine (Bottom-Left: x=458..686, y=486..588, h=102) -->
+          <rect x="458" y="486" width="228" height="102" rx="10" fill="#ffffff" stroke="#059669" stroke-width="2"/>
+          <text x="472" y="510" font-size="13.5" font-weight="800" fill="#0f2744">O/0 Healer &amp; Mod-36 Check</text>
+          <text x="472" y="529" font-size="11" font-weight="600" fill="#475569">Heals PAN 0&harr;O OCR noise (K02/K08)</text>
+          <text x="472" y="545" font-size="11" font-weight="600" fill="#475569">Blocks Tampered K06 &amp; Cancelled K01</text>
+          <rect x="472" y="556" width="174" height="20" rx="4" fill="#d1fae5"/>
+          <text x="559" y="569" font-size="10" font-weight="800" fill="#065f46" text-anchor="middle">Live Registry Cross-Match</text>
+
+          <!-- Node 4D: Remote Owner Aadhaar e-Sign (Bottom-Right: x=728..954, y=486..588, h=102) -->
+          <rect x="728" y="486" width="226" height="102" rx="10" fill="#ffffff" stroke="#10b981" stroke-width="1.6"/>
+          <text x="742" y="510" font-size="13.5" font-weight="800" fill="#0f2744">Remote Aadhaar e-Sign</text>
+          <text x="742" y="529" font-size="11" font-weight="600" fill="#475569">Fixes K08/K09 Admin Upload</text>
+          <text x="742" y="545" font-size="11" font-weight="600" fill="#475569">WhatsApp OTP Link to Owner</text>
+          <rect x="742" y="556" width="144" height="20" rx="4" fill="#eff6ff"/>
+          <text x="814" y="569" font-size="10" font-weight="700" fill="#1d4ed8" text-anchor="middle">10s Digital Mandate</text>
+        </g>
+
+        <!-- ================= ZONE 5 NODES (EXPANDED SPLIT-ORDER BSS/OSS) === -->
+        <g class="node-group dim-on-cpq dim-on-kyc dim-on-ltv">
+          <!-- Node 5A: Kafka Order Splitter (Expanded vertically: x=1040..1180, y=104..324, h=220) -->
+          <rect x="1040" y="104" width="140" height="220" rx="10" fill="#fffbeb" stroke="#d97706" stroke-width="2"/>
+          <text x="1110" y="142" font-size="13.5" font-weight="800" fill="#78350f" text-anchor="middle">Split-Order</text>
+          <text x="1110" y="160" font-size="13.5" font-weight="800" fill="#78350f" text-anchor="middle">Orchestrator</text>
+          <rect x="1055" y="176" width="110" height="22" rx="4" fill="#fef3c7" stroke="#d97706"/>
+          <text x="1110" y="191" font-size="10.5" font-weight="700" fill="#b45309" text-anchor="middle">TMF622 / Kafka</text>
+          <text x="1110" y="222" font-size="11" font-weight="600" fill="#92400e" text-anchor="middle">Parallel SOM</text>
+          <text x="1110" y="239" font-size="11" font-weight="600" fill="#92400e" text-anchor="middle">Decomposition</text>
+          <text x="1110" y="268" font-size="10.5" font-weight="600" fill="#b45309" text-anchor="middle">Zero Serial Wait</text>
+          <text x="1110" y="285" font-size="10.5" font-weight="600" fill="#b45309" text-anchor="middle">Event Driven</text>
+
+          <!-- Node 5B: Track A Instant Digital (< 2 Hours) (x=1212..1510, y=58..170, h=112) -->
+          <rect x="1212" y="58" width="298" height="112" rx="10" fill="#ecfdf5" stroke="#059669" stroke-width="2"/>
+          <rect x="1226" y="70" width="124" height="20" rx="4" fill="#059669"/>
+          <text x="1288" y="84" font-size="10.5" font-weight="800" fill="#ffffff" text-anchor="middle">TRACK A · &lt; 2 HOURS</text>
+          <text x="1226" y="110" font-size="13.5" font-weight="800" fill="#064e3b">Day-1 Instant Digital Provisioning</text>
+          <text x="1226" y="130" font-size="11" font-weight="600" fill="#065f46">• Mobile eSIM (P07/P08) · Cloud Email (P16)</text>
+          <text x="1226" y="148" font-size="11" font-weight="600" fill="#065f46">• Endpoint Cyber (P20) · Website (P18) · POS (P19)</text>
+
+          <!-- Node 5C: Track B Physical GPS & 48h AirFiber Bridge (x=1212..1510, y=184..298, h=114) -->
+          <rect x="1212" y="184" width="298" height="114" rx="10" fill="#eff6ff" stroke="#2563eb" stroke-width="2"/>
+          <rect x="1226" y="196" width="168" height="20" rx="4" fill="#2563eb"/>
+          <text x="1310" y="210" font-size="10.5" font-weight="800" fill="#ffffff" text-anchor="middle">TRACK B · GPS + 48H BRIDGE</text>
+          <text x="1226" y="236" font-size="13.5" font-weight="800" fill="#1e3a8a">Physical Fibre &amp; 5G AirFiber Fallback</text>
+          <text x="1226" y="256" font-size="11" font-weight="600" fill="#1e40af">• Live Field Engineer GPS + WhatsApp Milestones</text>
+          <text x="1226" y="274" font-size="11" font-weight="600" fill="#1e40af">• &gt;7d Fibre Delay &rarr; 48h P04 5G AirFiber Auto-Bridge</text>
+
+          <!-- Node 5D: Consolidated Single-Bill Hub (TMF666) (x=1212..1510, y=324..422, h=98) -->
+          <rect x="1212" y="324" width="298" height="98" rx="10" fill="#ffffff" stroke="#2563eb" stroke-width="2"/>
+          <text x="1228" y="350" font-size="13.5" font-weight="800" fill="#0f2744">Consolidated Single-Bill Engine (TMF666)</text>
+          <text x="1228" y="370" font-size="11" font-weight="600" fill="#475569">Merges Mobile + Fibre + Cloud + IoT onto 1 Bill</text>
+          <rect x="1228" y="384" width="132" height="22" rx="5" fill="#fef2f2"/>
+          <text x="1294" y="399" font-size="10.5" font-weight="800" fill="#b80000" text-anchor="middle">1 GST Invoice / Mo</text>
+          <rect x="1368" y="384" width="128" height="22" rx="5" fill="#f1f5f9"/>
+          <text x="1432" y="399" font-size="10.5" font-weight="800" fill="#0f2744" text-anchor="middle">1800-103-UDYAM</text>
+        </g>
+
+        <!-- ================= ZONE 6 NODES (EXPANDED LTV PROPENSITY CO-PILOT) -->
+        <g class="node-group dim-on-cpq dim-on-kyc dim-on-oss">
+          <!-- Node 6A: EV Propensity Scorer (x=1040..1262, y=488..590, h=102) -->
+          <rect x="1040" y="488" width="222" height="102" rx="10" fill="#ffffff" stroke="#7c3aed" stroke-width="1.6"/>
+          <text x="1054" y="512" font-size="13" font-weight="800" fill="#0f2744">Retention-Adjusted LTV Scorer</text>
+          <text x="1054" y="531" font-size="10.5" font-weight="700" fill="#6d28d9">EV = P(Conv) &times; MRR &times; 12 &times; (1&minus;Churn)</text>
+          <text x="1054" y="549" font-size="11" font-weight="600" fill="#475569">Prioritises Multi-Site (57% New MRR)</text>
+          <rect x="1054" y="559" width="152" height="20" rx="4" fill="#f5f3ff"/>
+          <text x="1130" y="573" font-size="10" font-weight="700" fill="#6d28d9" text-anchor="middle">Ranks 4,632 Stalled Leads</text>
+
+          <!-- Node 6B: 1-Click Rescue Router (x=1298..1510, y=488..590, h=102) -->
+          <rect x="1298" y="488" width="212" height="102" rx="10" fill="#ffffff" stroke="#7c3aed" stroke-width="1.6"/>
+          <text x="1312" y="512" font-size="13" font-weight="800" fill="#0f2744">1-Click Rescue Playbooks</text>
+          <text x="1312" y="532" font-size="11" font-weight="600" fill="#475569">• &ge;₹12k MRR &rarr; Field Closer</text>
+          <text x="1312" y="550" font-size="11" font-weight="600" fill="#475569">• KYC Stall &rarr; Partner QR</text>
+          <text x="1312" y="568" font-size="11" font-weight="600" fill="#475569">• Micro Retail &rarr; WhatsApp Bot</text>
+        </g>
+
+        <!-- ================= ZONE 7 CYLINDERS (EXPANDED 3D VECTOR DATABASES) -->
+        <!-- Cylinder 1: Product Catalogue (25 SKUs) -->
+        <g transform="translate(45, 658)">
+          <path d="M 0 18 V 112 C 0 124, 220 124, 220 112 V 18" fill="url(#dbGradRed)" stroke="#f87171" stroke-width="1.3"/>
+          <ellipse cx="110" cy="18" rx="110" ry="15" fill="#dc2626" stroke="#fca5a5" stroke-width="1.3"/>
+          <ellipse cx="110" cy="18" rx="84" ry="9" fill="#991b1b"/>
+          <text x="110" y="58" font-size="13" font-weight="800" fill="#ffffff" text-anchor="middle">product_catalogue.csv</text>
+          <text x="110" y="78" font-size="11" font-weight="600" fill="#fecaca" text-anchor="middle">25 B2B SKUs (P01–P25)</text>
+          <text x="110" y="96" font-size="10.5" font-weight="600" fill="#fca5a5" text-anchor="middle">10 GSTIN · 15 Non-GSTIN</text>
+        </g>
+
+        <!-- Cylinder 2: GSTIN Registry (3,534 Records) -->
+        <g transform="translate(350, 658)">
+          <path d="M 0 18 V 112 C 0 124, 230 124, 230 112 V 18" fill="url(#dbGradGreen)" stroke="#34d399" stroke-width="1.3"/>
+          <ellipse cx="115" cy="18" rx="115" ry="15" fill="#059669" stroke="#6ee7b7" stroke-width="1.3"/>
+          <ellipse cx="115" cy="18" rx="88" ry="9" fill="#064e3b"/>
+          <text x="115" y="58" font-size="13" font-weight="800" fill="#ffffff" text-anchor="middle">mock_gstin_registry.csv</text>
+          <text x="115" y="78" font-size="11" font-weight="600" fill="#d1fae5" text-anchor="middle">3,534 GSTINs · Mod-36 Verified</text>
+          <text x="115" y="96" font-size="10.5" font-weight="600" fill="#a7f3d0" text-anchor="middle">Active / Cancelled / Suspended</text>
+        </g>
+
+        <!-- Cylinder 3: Udyam Registry (2,723 Records) -->
+        <g transform="translate(655, 658)">
+          <path d="M 0 18 V 112 C 0 124, 230 124, 230 112 V 18" fill="url(#dbGradGreen)" stroke="#34d399" stroke-width="1.3"/>
+          <ellipse cx="115" cy="18" rx="115" ry="15" fill="#059669" stroke="#6ee7b7" stroke-width="1.3"/>
+          <ellipse cx="115" cy="18" rx="88" ry="9" fill="#064e3b"/>
+          <text x="115" y="58" font-size="13" font-weight="800" fill="#ffffff" text-anchor="middle">mock_udyam_registry.csv</text>
+          <text x="115" y="78" font-size="11" font-weight="600" fill="#d1fae5" text-anchor="middle">2,723 MSME Udyam Records</text>
+          <text x="115" y="96" font-size="10.5" font-weight="600" fill="#a7f3d0" text-anchor="middle">Micro / Small / Medium</text>
+        </g>
+
+        <!-- Cylinder 4: DPDP Encrypted KYC Vault (47 PNGs) -->
+        <g transform="translate(960, 658)">
+          <path d="M 0 18 V 112 C 0 124, 230 124, 230 112 V 18" fill="url(#dbGradBlue)" stroke="#38bdf8" stroke-width="1.3"/>
+          <ellipse cx="115" cy="18" rx="115" ry="15" fill="#0284c7" stroke="#7dd3fc" stroke-width="1.3"/>
+          <ellipse cx="115" cy="18" rx="88" ry="9" fill="#0c4a6e"/>
+          <text x="115" y="58" font-size="13" font-weight="800" fill="#ffffff" text-anchor="middle">DPDP Ephemeral Vault</text>
+          <text x="115" y="78" font-size="11" font-weight="600" fill="#e0f2fe" text-anchor="middle">47 KYC Docs (K01–K12)</text>
+          <text x="115" y="96" font-size="10.5" font-weight="700" fill="#7dd3fc" text-anchor="middle">72-Hr Raw Image Auto-Purge</text>
+        </g>
+
+        <!-- Cylinder 5: SMB Leads Telemetry Lakehouse (5,000 Leads) -->
+        <g transform="translate(1260, 658)">
+          <path d="M 0 18 V 112 C 0 124, 235 124, 235 112 V 18" fill="url(#dbGradBlue)" stroke="#a78bfa" stroke-width="1.3"/>
+          <ellipse cx="117.5" cy="18" rx="117.5" ry="15" fill="#6d28d9" stroke="#c4b5fd" stroke-width="1.3"/>
+          <ellipse cx="117.5" cy="18" rx="90" ry="9" fill="#4c1d95"/>
+          <text x="117.5" y="58" font-size="13" font-weight="800" fill="#ffffff" text-anchor="middle">smb_leads.csv (5,000)</text>
+          <text x="117.5" y="78" font-size="11" font-weight="600" fill="#ede9fe" text-anchor="middle">368 Activated · 4,632 Unclosed</text>
+          <text x="117.5" y="96" font-size="10.5" font-weight="600" fill="#ddd6fe" text-anchor="middle">6 Planted Funnel Signals</text>
+        </g>
+      </svg>
+    </div>
+
+    <!-- ===================================================================== -->
+    <!-- BOTTOM VISUAL INFOGRAPHICS STRIP (CRISP NON-CLIPPING CHARTS)          -->
+    <!-- ===================================================================== -->
+    <section class="infographics-strip">
+
+      <!-- Infographic 1: Cycle-Time Compression Waterfall -->
+      <div class="info-card">
+        <div class="info-card-hdr">
+          <span class="info-card-title">Infographic 1 · Cycle-Time Compression</span>
+          <span class="info-badge" style="background:var(--emerald-50); color:var(--emerald-600); border:1px solid #a7f3d0;">90% Faster Day-1 Live</span>
+        </div>
+
+        <div class="bar-row">
+          <div class="bar-meta">
+            <span>Legacy Serial Onboarding (Baseline)</span>
+            <span style="color:var(--airtel-red); font-weight:800;">17.6 Days Total</span>
+          </div>
+          <div class="bar-track">
+            <div class="bar-seg" style="width:25%; background:#64748b;">Quote 4.1d</div>
+            <div class="bar-seg" style="width:23%; background:#dc2626;">KYC 3.8d</div>
+            <div class="bar-seg" style="width:52%; background:#475569;">Serial Install 9.7d</div>
+          </div>
+        </div>
+
+        <div class="bar-row">
+          <div class="bar-meta">
+            <span>Airtel UdyamOne · Track A (Digital &amp; eSIM)</span>
+            <span style="color:var(--emerald-600); font-weight:800;">&lt; 2 Hours Live</span>
+          </div>
+          <div class="bar-track">
+            <div class="bar-seg" style="width:62%; background:#059669;">Quote 2s · Smart KYC 60s · Provisioning &lt;2h</div>
+          </div>
+        </div>
+
+        <div class="bar-row">
+          <div class="bar-meta">
+            <span>Airtel UdyamOne · Track B (GPS Fibre / AirFiber)</span>
+            <span style="color:var(--blue-600); font-weight:800;">2.0 – 5.0 Days</span>
+          </div>
+          <div class="bar-track">
+            <div class="bar-seg" style="width:78%; background:#2563eb;">48h 5G AirFiber Bridge + Live GPS Fibre Install</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Infographic 2: Parallel Split-Order Execution Timeline (Zero Text Clipping) -->
+      <div class="info-card">
+        <div class="info-card-hdr">
+          <span class="info-card-title">Infographic 2 · Parallel Split-Order Orchestration</span>
+          <span class="info-badge" style="background:var(--blue-50); color:var(--blue-600); border:1px solid #bfdbfe;">TMF622 Event Bus</span>
+        </div>
+
+        <div class="gantt-grid">
+          <div class="gantt-lane">
+            <span class="gantt-label">T + 00:01 min</span>
+            <div class="gantt-timeline">
+              <div class="gantt-pill" style="background:#059669;">Smart KYC Verified + Single Mandate</div>
+            </div>
+          </div>
+          <div class="gantt-lane">
+            <span class="gantt-label">T + 00:15 min</span>
+            <div class="gantt-timeline">
+              <div class="gantt-pill" style="margin-left:5%; background:#10b981;">Track A: eSIM (P07/P08) + Cloud Email + Cyber Live</div>
+            </div>
+          </div>
+          <div class="gantt-lane">
+            <span class="gantt-label">T + 24–48 hrs</span>
+            <div class="gantt-timeline">
+              <div class="gantt-pill" style="margin-left:12%; background:#d97706;">5G AirFiber 100 (P04) Plug &amp; Play Bridge</div>
+            </div>
+          </div>
+          <div class="gantt-lane">
+            <span class="gantt-label">T + Day 3–5</span>
+            <div class="gantt-timeline">
+              <div class="gantt-pill" style="margin-left:18%; background:#2563eb;">Track B: Fibre / Leased Line + 1 Unified Bill</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Infographic 3: Architecture Notation & Connector Legend -->
+      <div class="info-card">
+        <div class="info-card-hdr">
+          <span class="info-card-title">Infographic 3 · Blueprint Notation</span>
+          <span class="info-badge" style="background:var(--slate-200); color:var(--slate-800);">ISO / TMF ODA</span>
+        </div>
+
+        <div class="legend-grid">
+          <div class="legend-item">
+            <svg width="26" height="12"><line x1="0" y1="6" x2="24" y2="6" stroke="#2563eb" stroke-width="2.5"/></svg>
+            <span>Sync REST / gRPC</span>
+          </div>
+          <div class="legend-item">
+            <svg width="26" height="12"><line x1="0" y1="6" x2="24" y2="6" stroke="#059669" stroke-width="2.2" stroke-dasharray="4,3"/></svg>
+            <span>Async Event / DB</span>
+          </div>
+          <div class="legend-item">
+            <svg width="18" height="18" viewBox="0 0 20 20"><polygon points="10,2 18,10 10,18 2,10" fill="#fffbeb" stroke="#d97706" stroke-width="2"/></svg>
+            <span>Decision Gate</span>
+          </div>
+          <div class="legend-item">
+            <svg width="18" height="18" viewBox="0 0 20 20"><ellipse cx="10" cy="5" rx="7" ry="3" fill="#059669"/><path d="M3 5v10c0 2 14 2 14 0V5" fill="#065f46"/></svg>
+            <span>Registry Cylinder</span>
+          </div>
+          <div class="legend-item">
+            <span style="width:16px; height:16px; border-radius:50%; background:var(--airtel-red); color:#fff; font-size:9.5px; font-weight:800; display:inline-flex; align-items:center; justify-content:center; flex-shrink:0;">1</span>
+            <span>Flow Step (①–⑨)</span>
+          </div>
+          <div class="legend-item">
+            <span style="width:10px; height:10px; border-radius:2px; background:#059669; display:inline-block; flex-shrink:0;"></span>
+            <span>72h Purge Enforced</span>
+          </div>
+        </div>
+      </div>
+
+    </section>
+  </div>
+
+  <script>
+    function highlightArchFlow(mode, btnEl) {
+      document.querySelectorAll(".flow-filter-btn").forEach((b) => b.classList.remove("active"));
+      if (btnEl) btnEl.classList.add("active");
+
+      const svg = document.getElementById("archSvg");
+      svg.classList.remove("filter-cpq", "filter-kyc", "filter-oss", "filter-ltv");
+      if (mode !== "all") {
+        svg.classList.add("filter-" + mode);
+      }
+    }
+  </script>
+</body>
+</html>

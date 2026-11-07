@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>1-Page Data Privacy &amp; Security Architecture Brief — Airtel UdyamOne</title>
+  <link rel="icon" type="image/svg+xml" href="/static/favicon.svg" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/static/favicon-32x32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="/static/favicon-16x16.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/static/apple-touch-icon.png" />
+  <link rel="shortcut icon" href="/static/favicon.ico" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800&family=JetBrains+Mono:wght@500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --airtel-red: #e40000;
+      --airtel-red-dark: #b80000;
+      --airtel-red-soft: #fef2f2;
+      --navy-900: #0f2744;
+      --navy-800: #1a365d;
+      --slate-800: #1e293b;
+      --slate-700: #334155;
+      --slate-600: #475569;
+      --slate-500: #64748b;
+      --slate-400: #94a3b8;
+      --slate-300: #cbd5e1;
+      --slate-200: #e2e8f0;
+      --slate-100: #f1f5f9;
+      --slate-50: #f8fafc;
+      --emerald-700: #047857;
+      --emerald-600: #059669;
+      --emerald-50: #ecfdf5;
+      --emerald-border: #6ee7b7;
+      --blue-700: #1d4ed8;
+      --blue-600: #2563eb;
+      --blue-50: #eff6ff;
+      --blue-border: #93c5fd;
+      --amber-700: #b45309;
+      --amber-50: #fffbeb;
+      --amber-border: #fcd34d;
+      --purple-700: #6d28d9;
+      --purple-50: #f5f3ff;
+      --purple-border: #c4b5fd;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #f1f5f9;
+      color: var(--slate-800);
+      padding: 16px 20px 28px;
+      font-size: 13.5px;
+      line-height: 1.48;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      text-rendering: optimizeLegibility;
+    }
+
+    /* High-Clarity Wide 1-Page Executive Brief Container (Clean White Canvas) */
+    .brief-sheet {
+      max-width: 1500px;
+      margin: 0 auto;
+      background: #ffffff;
+      border-radius: 14px;
+      border: 1.5px solid var(--slate-300);
+      box-shadow: 0 12px 32px rgba(15, 39, 68, 0.08);
+      overflow: hidden;
+    }
+
+    /* Top Executive Branded Header (Airtel Red Gradient - Zero Black) */
+    .brief-header {
+      background: linear-gradient(135deg, #b80000 0%, #e40000 55%, #c80000 100%);
+      color: #ffffff;
+      padding: 16px 26px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 2px solid #a30000;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .brand-left {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .brand-icon-box {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      background: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+    }
+
+    .title-block h1 {
+      font-family: "Plus Jakarta Sans", "Inter", sans-serif;
+      font-size: 19px;
+      font-weight: 800;
+      letter-spacing: -0.3px;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .title-block h1 span.pill-track {
+      background: rgba(255, 255, 255, 0.22);
+      padding: 2px 8px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .title-sub {
+      font-size: 13px;
+      color: #ffe4e6;
+      font-weight: 500;
+      margin-top: 3px;
+    }
+
+    .header-meta-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .reg-pill {
+      background: rgba(255, 255, 255, 0.18);
+      border: 1px solid rgba(255, 255, 255, 0.35);
+      color: #ffffff;
+      font-size: 11.5px;
+      font-weight: 700;
+      padding: 5px 11px;
+      border-radius: 6px;
+      letter-spacing: 0.2px;
+    }
+
+    .btn-export {
+      background: #ffffff;
+      color: #b80000;
+      border: none;
+      padding: 7px 14px;
+      border-radius: 7px;
+      font-size: 12px;
+      font-weight: 800;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: inherit;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.12);
+      transition: background 0.15s ease, transform 0.1s ease;
+    }
+
+    .btn-export:hover {
+      background: #fff1f2;
+      transform: translateY(-1px);
+    }
+
+    .brief-body {
+      padding: 18px 26px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      background: #ffffff;
+    }
+
+    /* Section Header Bar (Crisp & High-Contrast Light Theme) */
+    .sec-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 2px solid var(--slate-200);
+      padding-bottom: 6px;
+      margin-bottom: 10px;
+    }
+
+    .sec-bar-title {
+      font-family: "Plus Jakarta Sans", "Inter", sans-serif;
+      font-size: 13.5px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      color: var(--navy-900);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .sec-num {
+      width: 22px;
+      height: 22px;
+      border-radius: 6px;
+      background: #e40000;
+      color: #ffffff;
+      font-size: 12px;
+      font-weight: 800;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .sec-bar-tag {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--slate-600);
+      background: var(--slate-100);
+      padding: 3px 10px;
+      border-radius: 6px;
+      border: 1px solid var(--slate-300);
+    }
+
+    /* Visual Data Lifecycle SVG Container */
+    .lifecycle-svg-wrap {
+      background: #f8fafc;
+      border: 1.5px solid var(--slate-300);
+      border-radius: 12px;
+      padding: 10px 14px;
+    }
+
+    .lifecycle-svg-wrap svg text {
+      font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    /* 4 Statutory Pillars Grid */
+    .statutory-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+    }
+
+    .fluent-card {
+      background: #ffffff;
+      border: 1.5px solid var(--slate-300);
+      border-radius: 10px;
+      padding: 14px 16px;
+      box-shadow: 0 2px 5px rgba(15, 39, 68, 0.04);
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+    }
+
+    .card-top-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+    }
+
+    .statute-tag {
+      font-size: 11px;
+      font-weight: 800;
+      padding: 3px 8px;
+      border-radius: 5px;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+
+    .fluent-card h3 {
+      font-family: "Plus Jakarta Sans", "Inter", sans-serif;
+      font-size: 15px;
+      font-weight: 800;
+      color: var(--navy-900);
+      letter-spacing: -0.2px;
+    }
+
+    .fluent-card p {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--slate-700);
+      line-height: 1.5;
+    }
+
+    .code-inline {
+      font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 11.5px;
+      font-weight: 700;
+      background: #f1f5f9;
+      color: var(--navy-900);
+      padding: 1px 6px;
+      border-radius: 4px;
+      border: 1px solid var(--slate-300);
+    }
+
+    /* Two-Column Middle Layout: Lifecycle Table + Defense-in-Depth Matrix */
+    .mid-split {
+      display: grid;
+      grid-template-columns: 1.25fr 1fr;
+      gap: 18px;
+    }
+
+    .arch-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+      border: 1.5px solid var(--slate-300);
+      border-radius: 10px;
+      overflow: hidden;
+      background: #ffffff;
+    }
+
+    .arch-table th,
+    .arch-table td {
+      padding: 9px 12px;
+      border-bottom: 1px solid var(--slate-200);
+      text-align: left;
+      vertical-align: top;
+      color: var(--slate-700);
+      font-weight: 500;
+      line-height: 1.45;
+    }
+
+    .arch-table td strong {
+      color: var(--navy-900);
+      font-weight: 800;
+    }
+
+    .arch-table th {
+      background: #f1f5f9;
+      font-weight: 800;
+      font-size: 11.5px;
+      text-transform: uppercase;
+      color: var(--navy-900);
+      letter-spacing: 0.35px;
+      border-bottom: 2px solid var(--slate-300);
+    }
+
+    .arch-table tr:nth-child(even) td {
+      background: #f8fafc;
+    }
+
+    .arch-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    /* Security Architecture & Forensic Proof Stack */
+    .sec-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .sec-row-card {
+      background: #f8fafc;
+      border: 1.5px solid var(--slate-300);
+      border-radius: 10px;
+      padding: 11px 14px;
+      display: grid;
+      grid-template-columns: 185px 1fr;
+      gap: 14px;
+      align-items: center;
+    }
+
+    .sec-row-title {
+      font-family: "Plus Jakarta Sans", "Inter", sans-serif;
+      font-size: 13.5px;
+      font-weight: 800;
+      color: var(--navy-900);
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .sec-row-desc {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--slate-700);
+      line-height: 1.46;
+    }
+
+    .sec-row-desc strong {
+      color: var(--navy-900);
+      font-weight: 800;
+    }
+
+    /* Bottom Forensic Audit Bar (Clean White Cards - Zero Black) */
+    .forensic-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 12px;
+    }
+
+    .forensic-pill {
+      background: #ffffff;
+      color: var(--slate-800);
+      border-radius: 10px;
+      padding: 12px 14px;
+      border: 1.5px solid var(--slate-300);
+      box-shadow: 0 2px 5px rgba(15, 39, 68, 0.04);
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .forensic-pill-hdr {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      margin-bottom: 2px;
+    }
+
+    .forensic-pill-hdr strong {
+      font-family: "Plus Jakarta Sans", "Inter", sans-serif;
+      font-size: 13px;
+      font-weight: 800;
+      color: var(--navy-900);
+    }
+
+    .forensic-pill-hdr span {
+      font-size: 11px;
+      font-weight: 800;
+      padding: 2px 7px;
+      border-radius: 5px;
+      white-space: nowrap;
+    }
+
+    .forensic-pill p {
+      font-size: 12.5px;
+      font-weight: 500;
+      color: var(--slate-600);
+      line-height: 1.45;
+    }
+
+    .forensic-pill p strong {
+      color: var(--navy-900);
+    }
+
+    @media (max-width: 1200px) {
+      .statutory-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .mid-split {
+        grid-template-columns: 1fr;
+      }
+      .forensic-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media print {
+      @page {
+        size: landscape;
+        margin: 6mm;
+      }
+      body {
+        background: #ffffff;
+        padding: 0;
+      }
+      .brief-sheet {
+        box-shadow: none;
+        border: 1px solid var(--slate-300);
+      }
+      .btn-export {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="brief-sheet">
+    <!-- Top Executive Branded Header (Airtel Red - Zero Black) -->
+    <header class="brief-header">
+      <div class="brand-left">
+        <div class="brand-icon-box">
+          <svg width="26" height="26" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M9 22C9 15.5 13.5 10 19.5 10C22.5 10 25 11.5 25 14C25 17 21.5 18 17 19C13 20 10.5 21 9.5 24" stroke="#E40000" stroke-width="3" stroke-linecap="round"/>
+            <circle cx="19.5" cy="10" r="2.2" fill="#E40000"/>
+            <circle cx="25" cy="14" r="2.2" fill="#E40000"/>
+            <circle cx="9.5" cy="24" r="2.5" fill="#E40000"/>
+          </svg>
+        </div>
+        <div class="title-block">
+          <h1>AIRTEL UDYAM-ONE — 1-PAGE DATA PRIVACY &amp; SECURITY ARCHITECTURE BRIEF <span class="pill-track">Track A · Enterprise</span></h1>
+          <div class="title-sub">Statutory &amp; Technical Design Choices · Digital Personal Data Protection (DPDP) Act, 2023 · Telecommunications Act, 2023 · DoT e-KYC</div>
+        </div>
+      </div>
+
+      <div class="header-meta-right">
+        <span class="reg-pill">DPDP Act 2023 (Sec. 5, 6, 8)</span>
+        <span class="reg-pill">DoT Unified License KYC</span>
+        <span class="reg-pill">CERT-In &amp; ISO 27701</span>
+        <button class="btn-export" onclick="window.print()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+          Print 1-Page PDF
+        </button>
+      </div>
+    </header>
+
+    <div class="brief-body">
+
+      <!-- ================================================================= -->
+      <!-- SECTION 1: VISUAL ZERO-TRUST DATA LIFECYCLE & PRIVACY PIPELINE    -->
+      <!-- ================================================================= -->
+      <div>
+        <div class="sec-bar">
+          <div class="sec-bar-title">
+            <span class="sec-num">1</span>
+            Zero-Trust PII Lifecycle &amp; Privacy-by-Design Architecture Pipeline
+          </div>
+          <span class="sec-bar-tag">End-to-End Trust Boundaries · Zero Public LLM PII Exposure</span>
+        </div>
+
+        <div class="lifecycle-svg-wrap">
+          <svg viewBox="0 0 1420 136" width="100%" height="auto" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <marker id="arr-p" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse">
+                <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#475569"/>
+              </marker>
+              <marker id="arr-g" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse">
+                <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#059669"/>
+              </marker>
+            </defs>
+
+            <!-- Stage 1 -->
+            <rect x="6" y="8" width="252" height="120" rx="10" fill="#ffffff" stroke="#94a3b8" stroke-width="2"/>
+            <rect x="18" y="18" width="146" height="22" rx="5" fill="#f1f5f9"/>
+            <text x="91" y="33" font-size="11" font-weight="800" fill="#334155" text-anchor="middle">STAGE 1 · ANONYMOUS</text>
+            <text x="18" y="58" font-size="14.5" font-weight="800" fill="#0f2744">Zero-PII Needs Discovery</text>
+            <text x="18" y="78" font-size="12" font-weight="600" fill="#475569">Only segment, staff, sites &amp; city</text>
+            <text x="18" y="95" font-size="12" font-weight="600" fill="#475569">processed for CPQ &amp; TCO quote</text>
+            <text x="18" y="115" font-size="11.5" font-weight="800" fill="#047857">&#10003; No Personal Identifiers Collected</text>
+
+            <path d="M 258 68 H 290" stroke="#64748b" stroke-width="2.4" marker-end="url(#arr-p)"/>
+
+            <!-- Stage 2 -->
+            <rect x="294" y="8" width="254" height="120" rx="10" fill="#ffffff" stroke="#3b82f6" stroke-width="2"/>
+            <rect x="306" y="18" width="166" height="22" rx="5" fill="#eff6ff"/>
+            <text x="389" y="33" font-size="11" font-weight="800" fill="#1d4ed8" text-anchor="middle">STAGE 2 · DPDP SEC. 5 &amp; 6</text>
+            <text x="306" y="58" font-size="14.5" font-weight="800" fill="#0f2744">Vernacular Notice &amp; Gate</text>
+            <text x="306" y="78" font-size="12" font-weight="600" fill="#475569">Itemized notice in 10 languages;</text>
+            <text x="306" y="95" font-size="12" font-weight="600" fill="#475569">unbundles KYC from commercial</text>
+            <text x="306" y="115" font-size="11.5" font-weight="800" fill="#1d4ed8">&#10003; Waives GST Doc on 15 SKUs</text>
+
+            <path d="M 548 68 H 580" stroke="#64748b" stroke-width="2.4" marker-end="url(#arr-p)"/>
+
+            <!-- Stage 3 -->
+            <rect x="584" y="8" width="258" height="120" rx="10" fill="#ffffff" stroke="#10b981" stroke-width="2"/>
+            <rect x="596" y="18" width="182" height="22" rx="5" fill="#ecfdf5"/>
+            <text x="687" y="33" font-size="11" font-weight="800" fill="#047857" text-anchor="middle">STAGE 3 · DPDP SEC. 8(3)/(5)</text>
+            <text x="596" y="58" font-size="14.5" font-weight="800" fill="#0f2744">Air-Gapped OCR &amp; Masking</text>
+            <text x="596" y="78" font-size="12" font-weight="600" fill="#475569">Isolated VPC OCR + O/0 Healer;</text>
+            <text x="596" y="95" font-size="12" font-weight="600" fill="#475569">default mask: 27XUI******D1ZP</text>
+            <text x="596" y="115" font-size="11.5" font-weight="800" fill="#047857">&#10003; Zero External LLM PII Sharing</text>
+
+            <path d="M 842 68 H 874" stroke="#64748b" stroke-width="2.4" marker-end="url(#arr-p)"/>
+
+            <!-- Stage 4 -->
+            <rect x="878" y="8" width="252" height="120" rx="10" fill="#ffffff" stroke="#f59e0b" stroke-width="2"/>
+            <rect x="890" y="18" width="174" height="22" rx="5" fill="#fffbeb"/>
+            <text x="977" y="33" font-size="11" font-weight="800" fill="#b45309" text-anchor="middle">STAGE 4 · UIDAI TOKENIZATION</text>
+            <text x="890" y="58" font-size="14.5" font-weight="800" fill="#0f2744">Virtual Aadhaar e-Sign</text>
+            <text x="890" y="78" font-size="12" font-weight="600" fill="#475569">Remote proprietor signs via OTP;</text>
+            <text x="890" y="95" font-size="12" font-weight="600" fill="#475569">only cryptographic hash stored</text>
+            <text x="890" y="115" font-size="11.5" font-weight="800" fill="#b45309">&#10003; Zero 12-Digit Aadhaar Stored</text>
+
+            <path d="M 1130 68 H 1162" stroke="#059669" stroke-width="2.6" marker-end="url(#arr-g)"/>
+
+            <!-- Stage 5 (Clean Emerald Light Finish - Zero Black) -->
+            <rect x="1166" y="8" width="248" height="120" rx="10" fill="#f0fdf4" stroke="#059669" stroke-width="2.2"/>
+            <rect x="1178" y="18" width="168" height="22" rx="5" fill="#059669"/>
+            <text x="1262" y="33" font-size="11" font-weight="800" fill="#ffffff" text-anchor="middle">STAGE 5 · DPDP SEC. 8(7)</text>
+            <text x="1178" y="58" font-size="14.5" font-weight="800" fill="#065f46">72-Hr Raw Image Purge</text>
+            <text x="1178" y="78" font-size="12" font-weight="600" fill="#166534">Raw PNGs crypto-shredded at 72h;</text>
+            <text x="1178" y="95" font-size="12" font-weight="600" fill="#166534">immutable audit hash kept for DoT</text>
+            <text x="1178" y="115" font-size="11.5" font-weight="800" fill="#047857">&#10003; AES-256-GCM + KMS Enclave</text>
+          </svg>
+        </div>
+      </div>
+
+      <!-- ================================================================= -->
+      <!-- SECTION 2: STATUTORY COMPLIANCE MAPPING (DPDP ACT, 2023)          -->
+      <!-- ================================================================= -->
+      <div>
+        <div class="sec-bar">
+          <div class="sec-bar-title">
+            <span class="sec-num">2</span>
+            Statutory Architecture Choices Under the Digital Personal Data Protection (DPDP) Act, 2023
+          </div>
+          <span class="sec-bar-tag">Aligned with Eighth Schedule Languages &amp; Telecommunications Act, 2023</span>
+        </div>
+
+        <div class="statutory-grid">
+          <div class="fluent-card">
+            <div class="card-top-row">
+              <span class="statute-tag" style="background:var(--blue-50); color:var(--blue-700); border:1px solid var(--blue-border);">Section 5 · Itemized Notice</span>
+              <span style="font-size:11.5px; font-weight:800; color:var(--slate-600);">10 Languages</span>
+            </div>
+            <h3>Eighth-Schedule Vernacular Notice</h3>
+            <p>
+              Before unlocking document upload or registry verification, UdyamOne presents an itemized notice in the MSME owner's native language (Hindi, Tamil, Marathi, Telugu, Kannada, Gujarati, Bengali, Punjabi, Malayalam, English) detailing exact data fields, processing purpose, and direct Data Protection Board of India (DPBI) grievance links.
+            </p>
+          </div>
+
+          <div class="fluent-card">
+            <div class="card-top-row">
+              <span class="statute-tag" style="background:var(--emerald-50); color:var(--emerald-700); border:1px solid var(--emerald-border);">Section 6(1) · Minimisation</span>
+              <span style="font-size:11.5px; font-weight:800; color:var(--emerald-700);">Udyam Lite</span>
+            </div>
+            <h3>Conditional GSTIN Waiver Engine</h3>
+            <p>
+              Section 6(1) mandates limiting collection strictly to data necessary for the specified service. Because <strong>15 of 25 catalogue SKUs</strong> have <span class="code-inline">requires_gstin=N</span>, our CPQ engine dynamically activates <em>Udyam Lite</em>—legally waiving GST Certificate collection for micro-enterprises and preventing over-collection.
+            </p>
+          </div>
+
+          <div class="fluent-card">
+            <div class="card-top-row">
+              <span class="statute-tag" style="background:var(--amber-50); color:var(--amber-700); border:1px solid var(--amber-border);">Section 8(3) · Data Accuracy</span>
+              <span style="font-size:11.5px; font-weight:800; color:var(--amber-700);">Zero False Reject</span>
+            </div>
+            <h3>Algorithmic Fairness &amp; O/0 Healing</h3>
+            <p>
+              Section 8(3) obligates Data Fiduciaries using data to make decisions affecting a Data Principal to ensure <strong>completeness, accuracy, and consistency</strong>. Our <span class="code-inline">O&harr;0</span> PAN normalizer heals OCR font noise (<span class="code-inline">K02, K08</span>) before Modulo-36 validation—preventing unfair automated rejection of valid MSMEs.
+            </p>
+          </div>
+
+          <div class="fluent-card">
+            <div class="card-top-row">
+              <span class="statute-tag" style="background:var(--purple-50); color:var(--purple-700); border:1px solid var(--purple-border);">Sec. 6(4) &amp; 11–13 · Rights</span>
+              <span style="font-size:11.5px; font-weight:800; color:var(--purple-700);">Unbundled</span>
+            </div>
+            <h3>Unbundled Consent &amp; 1-Tap Revocation</h3>
+            <p>
+              Separates mandatory statutory DoT subscriber verification from optional commercial/VAS messaging. Every consent record logs <span class="code-inline">consent_id, lang, purpose_hash, timestamp</span> and supports 1-click withdrawal via WhatsApp or PWA, triggering immediate downstream processor suppression under Section 8(2).
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================================================================= -->
+      <!-- SECTION 3: DATA RETENTION SCHEDULE & DEFENSE-IN-DEPTH CONTROLS    -->
+      <!-- ================================================================= -->
+      <div class="mid-split">
+
+        <!-- Left: Stage-by-Stage Minimisation & Retention Matrix -->
+        <div>
+          <div class="sec-bar">
+            <div class="sec-bar-title">
+              <span class="sec-num">3</span>
+              Data Minimisation, Masking &amp; Dual-Tier Erasure Schedule (Sec. 8(7) vs DoT)
+            </div>
+          </div>
+
+          <table class="arch-table">
+            <thead>
+              <tr>
+                <th style="width:22%;">Workflow Stage</th>
+                <th style="width:27%;">Data Elements Processed</th>
+                <th style="width:26%;">Privacy &amp; Access Guardrail</th>
+                <th style="width:25%;">Retention &amp; Auto-Purge SLA</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>1. Vernacular CPQ Advisor &amp; Quote</strong></td>
+                <td>Segment, employee count, site count, city tier, requested SKUs</td>
+                <td><strong>Anonymous Execution:</strong> Zero PII or contact numbers required to generate quotes.</td>
+                <td>Ephemeral session token; auto-expires in <strong>24 Hours</strong> if unsubmitted.</td>
+              </tr>
+              <tr>
+                <td><strong>2. Smart KYC &amp; Registry Lookup</strong></td>
+                <td>GSTIN, Udyam No., Signatory ID, Utility Bill (&le; 90d vs <span class="code-inline">2026-07-15</span>)</td>
+                <td><strong>Default UI &amp; Log Masking:</strong> <span class="code-inline">27XUI******D1ZP</span> &amp; <span class="code-inline">UDYAM-MH-00-****696</span>.</td>
+                <td><strong>72-Hour Raw Image Purge:</strong> Raw PNG scans shredded at 72h; signed DoT audit hash retained.</td>
+              </tr>
+              <tr>
+                <td><strong>3. Remote Owner Aadhaar e-Sign</strong></td>
+                <td>Proprietor / Partner UIDAI virtual e-Sign verification response</td>
+                <td><strong>Zero Aadhaar Storage:</strong> Uses UIDAI Virtual ID OTP link; 12-digit Aadhaar never touches DB.</td>
+                <td>Detached PKCS#7 signature hash retained for active DoT license tenure.</td>
+              </tr>
+              <tr>
+                <td><strong>4. Channel Partner Phygital QR</strong></td>
+                <td>Dealer code, attribution ID, onboarding milestone status</td>
+                <td><strong>Strict Tenant RBAC (Sec. 8(2)):</strong> Partners cannot view or download customer KYC images.</td>
+                <td>Commission attribution log retained; customer PII masked from partner view.</td>
+              </tr>
+              <tr>
+                <td><strong>5. Sales Cockpit (4,632 Leads)</strong></td>
+                <td>Business trade name, drop stage, LTV propensity score</td>
+                <td><strong>Purpose-Bound Rescue:</strong> Outreach restricted to resolving stated onboarding blocker.</td>
+                <td>Unclosed leads scrubbed after <strong>180 Days</strong> or immediately upon Sec. 6(4) opt-out.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Right: Defense-in-Depth Cryptographic & Infrastructure Controls -->
+        <div>
+          <div class="sec-bar">
+            <div class="sec-bar-title">
+              <span class="sec-num">4</span>
+              Defense-in-Depth Security &amp; Cryptographic Controls (Sec. 8(4)–8(6))
+            </div>
+          </div>
+
+          <div class="sec-stack">
+            <div class="sec-row-card">
+              <div class="sec-row-title">
+                <span>Neuro-Symbolic Air-Gap</span>
+                <span class="statute-tag" style="background:var(--airtel-red-soft); color:var(--airtel-red-dark); border:1px solid #fecaca; width:fit-content;">Zero LLM Leak</span>
+              </div>
+              <div class="sec-row-desc">
+                Conversational NLU processes only non-PII business sizing. KYC document OCR, Modulo-36 math, and registry lookups execute inside an air-gapped microservice VPC—<strong>customer PII is never transmitted to external/public LLMs</strong>.
+              </div>
+            </div>
+
+            <div class="sec-row-card">
+              <div class="sec-row-title">
+                <span>Cryptographic Vault</span>
+                <span class="statute-tag" style="background:var(--blue-50); color:var(--blue-700); border:1px solid var(--blue-border); width:fit-content;">AES-256-GCM</span>
+              </div>
+              <div class="sec-row-desc">
+                All ephemeral document buffers use <strong>AES-256-GCM</strong> envelope encryption with HSM-backed KMS keys (per-tenant key rotation) and <strong>TLS 1.3 (mTLS)</strong> across GSTN, Udyam, and payment webhooks.
+              </div>
+            </div>
+
+            <div class="sec-row-card">
+              <div class="sec-row-title">
+                <span>DoT vs DPDP Reconciliation</span>
+                <span class="statute-tag" style="background:var(--emerald-50); color:var(--emerald-700); border:1px solid var(--emerald-border); width:fit-content;">Dual-Tier Store</span>
+              </div>
+              <div class="sec-row-desc">
+                Reconciles DPDP Sec. 8(7) erasure with DoT telecom subscriber rules by purging high-risk <strong>raw image files in 72 hours</strong> while preserving the lightweight <strong>SHA-256 verification receipt + registry timestamp</strong> for statutory telecom audits.
+              </div>
+            </div>
+
+            <div class="sec-row-card">
+              <div class="sec-row-title">
+                <span>CERT-In &amp; DPBI SIEM</span>
+                <span class="statute-tag" style="background:var(--amber-50); color:var(--amber-700); border:1px solid var(--amber-border); width:fit-content;">6-Hr SLA Ready</span>
+              </div>
+              <div class="sec-row-desc">
+                Immutable hash-chained audit logs track every OCR read, PII unmask toggle, and registry query, supporting automated <strong>CERT-In 6-hour incident reporting</strong> and DPBI breach notification under Section 8(6).
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ================================================================= -->
+      <!-- SECTION 4: EMPIRICAL FORENSIC VALIDATION ACROSS K01–K12 & LEADS   -->
+      <!-- ================================================================= -->
+      <div>
+        <div class="sec-bar">
+          <div class="sec-bar-title">
+            <span class="sec-num">5</span>
+            Empirical Security &amp; Anti-Fraud Validation Across Case Datasets (K01–K12 &amp; 5,000 Leads)
+          </div>
+          <span class="sec-bar-tag">100% Tested Against 3,534 GSTINs · 2,723 Udyam Records · 47 KYC Document Images</span>
+        </div>
+
+        <div class="forensic-grid">
+          <div class="forensic-pill">
+            <div class="forensic-pill-hdr">
+              <strong>1. Registry Leak Closure</strong>
+              <span style="background:#fee2e2; color:#dc2626; border:1px solid #fca5a5;">K01 + 22 Leads</span>
+            </div>
+            <p>Real-time GSTIN registry gate blocks <strong style="color:#dc2626;">Cancelled (K01)</strong> &amp; Suspended IDs, closing the <strong>22 leaked inactive GSTIN activations</strong> found in <strong>smb_leads.csv</strong>.</p>
+          </div>
+
+          <div class="forensic-pill">
+            <div class="forensic-pill-hdr">
+              <strong>2. Checksum vs OCR Noise</strong>
+              <span style="background:#d1fae5; color:#059669; border:1px solid #6ee7b7;">K02, K08 vs K06</span>
+            </div>
+            <p>Mod-36 + O/0 healer auto-recovers valid PAN OCR noise on <strong>K02 &amp; K08</strong> while mathematically rejecting forged/tampered GSTIN checksums on <strong style="color:#d97706;">K06</strong>.</p>
+          </div>
+
+          <div class="forensic-pill">
+            <div class="forensic-pill-hdr">
+              <strong>3. Entity &amp; Stale Bill Gate</strong>
+              <span style="background:#fef3c7; color:#b45309; border:1px solid #fcd34d;">K07 &amp; K11</span>
+            </div>
+            <p>Cross-document entity matcher blocks trade-name spoofing on <strong>K07</strong>; 90-day recency gate (vs <strong>2026-07-15</strong>) rejects <strong style="color:#dc2626;">K11's 257-day expired bill</strong>.</p>
+          </div>
+
+          <div class="forensic-pill">
+            <div class="forensic-pill-hdr">
+              <strong>4. Signatory Authority</strong>
+              <span style="background:#dbeafe; color:#1d4ed8; border:1px solid #93c5fd;">K08 &amp; K09</span>
+            </div>
+            <p>Detects non-signatory <strong style="color:#1d4ed8;">Office admin</strong> uploads on <strong>K08 &amp; K09</strong> and triggers a 10-second WhatsApp UIDAI e-Sign link to the registered Proprietor/Partner.</p>
+          </div>
+
+          <div class="forensic-pill">
+            <div class="forensic-pill-hdr">
+              <strong>5. Image Quality &amp; Missing</strong>
+              <span style="background:#ede9fe; color:#6d28d9; border:1px solid #c4b5fd;">K02, K04, K05</span>
+            </div>
+            <p>Laplacian variance &amp; deskew gate flags blur (<strong>K04</strong>), skew (<strong>K02</strong>), and missing address proof (<strong>K05</strong>) with instant WhatsApp single-doc re-capture.</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</body>
+</html>

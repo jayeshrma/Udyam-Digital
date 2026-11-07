@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Airtel UdyamOne — Project Udyam Digital</title>
+  <link rel="icon" type="image/svg+xml" href="/static/favicon.svg" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/static/favicon-32x32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="/static/favicon-16x16.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/static/apple-touch-icon.png" />
+  <link rel="shortcut icon" href="/static/favicon.ico" />
+  <link rel="stylesheet" href="/static/styles.css" />
+</head>
+<body>
+  <!-- Top Executive Bar (52px fixed, zero secondary scrollbars) -->
+  <header class="top-header">
+    <div class="brand-cluster">
+      <!-- Toggle Button for Left Command Panel -->
+      <button class="btn-icon-sidebar" id="btnToggleSidebar" onclick="toggleLeftPanel()" title="Toggle Scenarios &amp; Deliverables Drawer">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="15" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+
+      <!-- Bespoke Airtel UdyamOne Telecom + Interconnect Node Logo -->
+      <div class="brand-logo-svg">
+        <svg width="32" height="32" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect width="34" height="34" rx="8" fill="#E40000"/>
+          <path d="M9 22C9 15.5 13.5 10 19.5 10C22.5 10 25 11.5 25 14C25 17 21.5 18 17 19C13 20 10.5 21 9.5 24" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round"/>
+          <circle cx="19.5" cy="10" r="2" fill="#FFFFFF"/>
+          <circle cx="25" cy="14" r="2" fill="#FFFFFF"/>
+          <circle cx="9.5" cy="24" r="2.2" fill="#FFFFFF"/>
+        </svg>
+      </div>
+
+      <div>
+        <div class="brand-title">
+          Airtel <span class="brand-accent">UdyamOne</span>
+          <span class="brand-badge">Enterprise Track A · MSME CPQ</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="header-center">
+      <!-- Dual-Mode View Switcher (Desktop Studio vs Smartphone PWA) -->
+      <div class="view-mode-pill">
+        <button class="view-btn active" id="btnViewStudio" onclick="setViewMode('studio')">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+          Studio Desktop
+        </button>
+        <button class="view-btn" id="btnViewPhone" onclick="setViewMode('phone')">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="3"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+          Smartphone PWA
+        </button>
+      </div>
+    </div>
+
+    <div class="header-right">
+      <!-- 10-Language Vernacular Selector -->
+      <select id="globalLanguageSelect" class="lang-select" onchange="onLanguageChange(this.value)" title="Select Preferred Vernacular Language">
+        <option value="English">English</option>
+        <option value="Hindi">हिन्दी (Hindi)</option>
+        <option value="Marathi">मराठी (Marathi)</option>
+        <option value="Tamil">தமிழ் (Tamil)</option>
+        <option value="Telugu">తెలుగు (Telugu)</option>
+        <option value="Kannada">ಕನ್ನಡ (Kannada)</option>
+        <option value="Gujarati">ગુજરાતી (Gujarati)</option>
+        <option value="Bengali">বাংলা (Bengali)</option>
+        <option value="Punjabi">ਪੰਜਾਬੀ (Punjabi)</option>
+        <option value="Malayalam">മലയാളം (Malayalam)</option>
+      </select>
+    </div>
+  </header>
+
+  <!-- Master Application Layout -->
+  <div class="app-layout">
+
+    <!-- =================================================================== -->
+    <!-- LEFT EXECUTIVE COMMAND PANEL (Authentic MSME Personas + Artifacts)  -->
+    <!-- =================================================================== -->
+    <aside class="left-command-panel" id="leftCommandPanel">
+      <div class="left-panel-content">
+        <!-- Section 1: Authentic Indian MSME Customer Personas -->
+        <div>
+          <div class="panel-section-title">
+            <span>MSME Customer Scenarios</span>
+            <span style="font-size:9.5px; opacity:0.75;">6 Presets</span>
+          </div>
+          <div class="scenario-list">
+            <button class="scenario-item active" id="preset_micro_nogst" onclick="applyJudgeScenario('micro_nogst')">
+              <div class="scenario-item-header">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+                Gupta Kirana Store
+              </div>
+              <div class="scenario-item-sub">Bareilly · No-GSTIN Udyam Lite</div>
+            </button>
+
+            <button class="scenario-item" id="preset_prof_tier2" onclick="applyJudgeScenario('prof_tier2')">
+              <div class="scenario-item-header">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+                Dr. Mehta Dental Clinic
+              </div>
+              <div class="scenario-item-sub">Hubballi · High-Security Clinic</div>
+            </button>
+
+            <button class="scenario-item" id="preset_multisite" onclick="applyJudgeScenario('multisite')">
+              <div class="scenario-item-header">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/></svg>
+                Surya Textiles &amp; Garments
+              </div>
+              <div class="scenario-item-sub">Surat · 4-Branch SD-WAN &amp; One Bill</div>
+            </button>
+
+            <button class="scenario-item" id="preset_factory" onclick="applyJudgeScenario('factory')">
+              <div class="scenario-item-header">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 20h20"/><path d="M5 20V8l5 4V4l5 4v12"/></svg>
+                Ramesh Auto Components
+              </div>
+              <div class="scenario-item-sub">Ludhiana · Leased Line &amp; Machine IoT</div>
+            </button>
+
+            <button class="scenario-item" id="preset_simonly" onclick="applyJudgeScenario('simonly')">
+              <div class="scenario-item-header">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+                Kolkata Sweet Hub
+              </div>
+              <div class="scenario-item-sub">Kolkata · Commercial 5G SIM Bundle</div>
+            </button>
+
+            <button class="scenario-item" id="preset_unfeasible" onclick="applyJudgeScenario('unfeasible')">
+              <div class="scenario-item-header">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12.55a11 11 0 0114.08 0"/><path d="M1.42 9a16 16 0 0121.16 0"/><circle cx="12" cy="20" r="1"/></svg>
+                Highland Tea Cafe
+              </div>
+              <div class="scenario-item-sub">Nilgiris · 48h 5G AirFiber Deploy</div>
+            </button>
+          </div>
+        </div>
+
+        <!-- Section 2: Submission Deliverables Dock -->
+        <div>
+          <div class="panel-section-title">
+            <span>Official Deliverables</span>
+            <span style="font-size:9.5px; opacity:0.75;">Artifacts</span>
+          </div>
+          <div class="deliverables-dock">
+            <a href="/deliverables/Architecture_Diagram.html" target="_blank" class="deliv-btn">
+              <span>5-Layer Architecture</span>
+              <span class="deliv-tag">Diagram ↗</span>
+            </a>
+            <a href="/deliverables/Business_Case_Deck.html" target="_blank" class="deliv-btn">
+              <span>CXO Business Deck</span>
+              <span class="deliv-tag">10 Slides ↗</span>
+            </a>
+            <a href="/deliverables/Privacy_and_Security_Note.html" target="_blank" class="deliv-btn">
+              <span>DPDP 2023 Compliance</span>
+              <span class="deliv-tag">1-Pager ↗</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- =================================================================== -->
+    <!-- MAIN WORKSPACE CANVAS                                              -->
+    <!-- =================================================================== -->
+    <main class="main-canvas" id="mainCanvas">
+
+      <!-- Studio Mode Top Navigation Tabs -->
+      <nav class="studio-nav-tabs" id="studioNavTabs">
+        <button class="tab-btn active" id="tabBtn_advisor" onclick="switchTab('advisor')">
+          <div class="tab-badge">1</div>
+          <div class="tab-label-text">Needs Advisor</div>
+        </button>
+        <button class="tab-btn" id="tabBtn_quote" onclick="switchTab('quote')">
+          <div class="tab-badge">2</div>
+          <div class="tab-label-text">Quote &amp; Checkout</div>
+        </button>
+        <button class="tab-btn" id="tabBtn_kyc" onclick="switchTab('kyc')">
+          <div class="tab-badge">3</div>
+          <div class="tab-label-text">Smart KYC</div>
+        </button>
+        <button class="tab-btn" id="tabBtn_tracker" onclick="switchTab('tracker')">
+          <div class="tab-badge">4</div>
+          <div class="tab-label-text">Order Tracker</div>
+        </button>
+        <button class="tab-btn" id="tabBtn_cockpit" onclick="switchTab('cockpit')">
+          <div class="tab-badge">5</div>
+          <div class="tab-label-text">Sales Cockpit</div>
+        </button>
+      </nav>
+
+      <!-- Desktop Studio Content Wrapper -->
+      <div class="workspace-content-pad" id="desktopWorkspacePad">
+        <div id="studioModulesContainer"></div>
+      </div>
+
+      <!-- Viewport-Constrained Smartphone Simulation Wrapper (Zero Outer Scroll) -->
+      <div class="smartphone-container-wrapper" id="smartphoneWrapper">
+        <div class="smartphone-device">
+          <!-- Clean Native Status Bar (No Camera Island Overlap) -->
+          <div class="smartphone-status-bar">
+            <span>9:41</span>
+            <span style="font-size:10px; color:var(--slate-400); font-weight:600;">Airtel UdyamOne</span>
+            <div class="status-bar-right">
+              <span>5G</span>
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><rect x="2" y="16" width="3" height="6" rx="1"/><rect x="7" y="12" width="3" height="10" rx="1"/><rect x="12" y="8" width="3" height="14" rx="1"/><rect x="17" y="4" width="3" height="18" rx="1"/></svg>
+              <svg width="14" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="16" height="10" rx="2"/><line x1="22" y1="11" x2="22" y2="13"/><rect x="4" y="9" width="12" height="6" fill="currentColor"/></svg>
+            </div>
+          </div>
+
+          <!-- Internal Touch Scroll Screen Body -->
+          <div class="smartphone-screen-body" id="smartphoneScreenBody">
+            <div id="mobileModulesContainer"></div>
+          </div>
+
+          <!-- Native Mobile Bottom Navigation Bar (5 States) -->
+          <nav class="mobile-bottom-nav">
+            <button class="mobile-bottom-tab active" id="mTabBtn_advisor" onclick="switchTab('advisor')">
+              <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+              <span>Advisor</span>
+            </button>
+            <button class="mobile-bottom-tab" id="mTabBtn_quote" onclick="switchTab('quote')">
+              <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+              <span>Quote</span>
+            </button>
+            <button class="mobile-bottom-tab" id="mTabBtn_kyc" onclick="switchTab('kyc')">
+              <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+              <span>KYC</span>
+            </button>
+            <button class="mobile-bottom-tab" id="mTabBtn_tracker" onclick="switchTab('tracker')">
+              <svg viewBox="0 0 24 24"><rect x="1" y="3" width="15" height="13" rx="1"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+              <span>Tracker</span>
+            </button>
+            <button class="mobile-bottom-tab" id="mTabBtn_cockpit" onclick="switchTab('cockpit')">
+              <svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+              <span>Partner</span>
+            </button>
+          </nav>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- Shared Modules Template (Rendered cleanly into either Studio or Phone container) -->
+  <template id="templateAllModules">
+    <!-- TAB 1: AI NEEDS ADVISOR -->
+    <section id="tabPane_advisor">
+      <div class="section-header">
+        <div>
+          <div class="section-title">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--airtel-red)" stroke-width="2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+            Neuro-Symbolic Needs Advisor
+          </div>
+          <div class="section-sub" id="advisorGreetingSub">
+            Discovers business type, staff size, locations and tools in &lt;60s with deterministic CPQ rules.
+          </div>
+        </div>
+        <div style="display:flex; gap:6px; flex-wrap:wrap;">
+          <span class="badge badge-red" id="badgeSingleBill">1 Single GST Bill</span>
+          <span class="badge badge-green" id="badgeKycTrack">Udyam Lite Active</span>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <!-- Left: Conversational / Voice Input + 4 Core Questions -->
+        <div class="panel">
+          <div class="section-header" style="margin-bottom:8px;">
+            <div style="font-weight:700; font-size:12.5px;">Natural Language &amp; Vernacular Voice Input</div>
+            <button class="btn btn-sm btn-outline" id="btnVoiceSim" onclick="simulateVoiceInput()">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+              Voice AI
+            </button>
+          </div>
+
+          <div class="form-group full" style="margin-bottom:10px;">
+            <textarea id="advQueryText" class="form-textarea" placeholder="Speak or type in Hindi, Tamil, Marathi, Punjabi, English..."></textarea>
+            <div style="display:flex; gap:5px; margin-top:6px; flex-wrap:wrap;">
+              <button class="btn btn-sm btn-outline" onclick="fillVoiceSample('hindi_kirana')">Hindi Kirana</button>
+              <button class="btn btn-sm btn-outline" onclick="fillVoiceSample('tamil_clinic')">Tamil Clinic</button>
+              <button class="btn btn-sm btn-outline" onclick="fillVoiceSample('punjabi_factory')">Punjabi Factory</button>
+              <button class="btn btn-sm btn-dark" style="margin-left:auto;" onclick="runAdvisorFromForm()">Extract &amp; Recommend</button>
+            </div>
+          </div>
+
+          <hr style="border:none; border-top:1px solid var(--slate-200); margin:10px 0;" />
+          <div style="font-weight:700; font-size:12px; margin-bottom:8px; color:var(--slate-800);">Structured Business Discovery</div>
+
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="form-label">Business Name</label>
+              <input type="text" id="advBizName" class="form-input" value="Gupta Kirana Store" onchange="runAdvisorFromForm()" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Segment (Type)</label>
+              <select id="advSegment" class="form-select" onchange="runAdvisorFromForm()">
+                <option value="Micro retail & services">Micro retail &amp; services (55%)</option>
+                <option value="Professional offices">Professional offices (25%)</option>
+                <option value="Small multi-site businesses">Small multi-site businesses (15%)</option>
+                <option value="Small manufacturers">Small manufacturers (5%)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Staff Size</label>
+              <input type="number" id="advEmployees" class="form-input" value="4" min="1" max="500" onchange="runAdvisorFromForm()" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Locations / Sites</label>
+              <input type="number" id="advSites" class="form-input" value="1" min="1" max="50" onchange="runAdvisorFromForm()" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">City &amp; Tier</label>
+              <select id="advCity" class="form-select" onchange="onCitySelectChange()">
+                <option value="Bareilly|2">Bareilly (Tier 2)</option>
+                <option value="Hubballi|2">Hubballi (Tier 2)</option>
+                <option value="Surat|2">Surat (Tier 2)</option>
+                <option value="Ludhiana|2">Ludhiana (Tier 2)</option>
+                <option value="Nilgiris|2">Nilgiris (Tier 2)</option>
+                <option value="Visakhapatnam|2">Visakhapatnam (Tier 2)</option>
+                <option value="Jaipur|2">Jaipur (Tier 2)</option>
+                <option value="Kochi|2">Kochi (Tier 2)</option>
+                <option value="Nagpur|2">Nagpur (Tier 2)</option>
+                <option value="Kolkata|1">Kolkata (Tier 1)</option>
+                <option value="Mumbai|1">Mumbai (Tier 1)</option>
+                <option value="Delhi|1">Delhi (Tier 1)</option>
+                <option value="Bengaluru|1">Bengaluru (Tier 1)</option>
+                <option value="Pune|1">Pune (Tier 1)</option>
+                <option value="Chennai|1">Chennai (Tier 1)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Products Requested</label>
+              <input type="text" id="advRequestedPids" class="form-input" value="P15" placeholder="e.g. P15, P03, P10" onchange="runAdvisorFromForm()" />
+            </div>
+          </div>
+
+          <div style="display:flex; gap:12px; flex-wrap:wrap; margin-top:10px; padding-top:8px; border-top:1px solid var(--slate-200);">
+            <label style="display:flex; align-items:center; gap:5px; font-size:11.5px; font-weight:600; cursor:pointer;">
+              <input type="checkbox" id="advHasGstin" onchange="runAdvisorFromForm()" /> Has Active GSTIN
+            </label>
+            <label style="display:flex; align-items:center; gap:5px; font-size:11.5px; font-weight:600; cursor:pointer;">
+              <input type="checkbox" id="advFibreFeasible" checked onchange="runAdvisorFromForm()" /> Fibre Feasible
+            </label>
+            <label style="display:flex; align-items:center; gap:5px; font-size:11.5px; font-weight:600; cursor:pointer;">
+              <input type="checkbox" id="advSimOnly" onchange="runAdvisorFromForm()" /> SIM-Only Request
+            </label>
+            <label style="display:flex; align-items:center; gap:5px; font-size:11.5px; font-weight:600; cursor:pointer;">
+              <input type="checkbox" id="advBudgetMode" onchange="runAdvisorFromForm()" /> Entry Budget
+            </label>
+          </div>
+        </div>
+
+        <!-- Right: CPQ Recommended Bundle & Guardrail Explanations -->
+        <div class="panel-white">
+          <div class="section-header" style="margin-bottom:6px;">
+            <div>
+              <div style="font-size:10px; font-weight:700; color:var(--airtel-red); text-transform:uppercase; letter-spacing:0.4px;">CPQ Recommendation</div>
+              <div class="section-title" id="recBundleTitle">Dukaan Digital Starter</div>
+            </div>
+            <div style="text-align:right;">
+              <div style="font-size:18px; font-weight:800;" id="recPriceRange">₹2,196 – ₹2,896/mo</div>
+              <div style="font-size:11px; color:var(--slate-500);" id="recSetupAndContract">Setup: ₹2,500 · 12-Mo</div>
+            </div>
+          </div>
+
+          <div id="advisorGuardrailContainer" class="guardrail-list"></div>
+          <div id="advisorLineItemsContainer" class="sku-list" style="margin-top:8px;"></div>
+
+          <div style="margin-top:14px; padding-top:10px; border-top:1px solid var(--slate-200); display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap;">
+            <div style="font-size:11.5px; color:var(--slate-600);" id="recKycDocSummary">
+              KYC: Udyam + ID + Bill (GST Certificate Waived)
+            </div>
+            <button class="btn btn-primary btn-sm" onclick="switchTab('quote')">
+              Customize Quote &amp; TCO Savings &rarr;
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 2: QUOTE & CHECKOUT -->
+    <section id="tabPane_quote" class="hidden">
+      <div class="price-hero">
+        <div>
+          <div style="font-size:10.5px; text-transform:uppercase; color:#fca5a5; font-weight:700; letter-spacing:0.4px;">Single-Bill Transparent Quote</div>
+          <div style="font-size:17px; font-weight:800; margin-top:2px;" id="quoteHeroTitle">Dukaan Digital Starter Bundle</div>
+          <div style="font-size:11.5px; color:var(--slate-400);" id="quoteHeroMeta">1 Consolidated GST Invoice · 1 Dedicated Support Desk (1800-103-UDYAM)</div>
+        </div>
+        <div style="display:flex; align-items:center; gap:18px; flex-wrap:wrap;">
+          <div>
+            <div style="font-size:10.5px; color:var(--slate-400);">Recommended Monthly</div>
+            <div class="price-big" id="quoteHeroMonthly">₹2,546 <span>/mo + GST</span></div>
+            <div style="font-size:11px; color:#86efac;" id="quoteHeroRange">Range: ₹2,196 – ₹2,896/mo</div>
+          </div>
+          <button class="btn btn-primary" onclick="switchTab('kyc')">
+            Accept Quote &amp; Start Smart KYC &rarr;
+          </button>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div style="display:flex; flex-direction:column; gap:14px;">
+          <!-- Multi-Vendor TCO Savings -->
+          <div class="panel-white">
+            <div class="section-header" style="margin-bottom:6px;">
+              <div>
+                <div class="section-title">Multi-Vendor TCO &amp; Downtime Savings Model</div>
+                <div class="section-sub">Consolidating separate ISP + POS + CCTV + Email into 1 Airtel Bill saves 24–28%</div>
+              </div>
+              <span class="badge badge-green" id="tcoSavingsBadge">Save 26%</span>
+            </div>
+            <div class="grid-3" style="margin-top:8px;">
+              <div class="panel" style="text-align:center;">
+                <div style="font-size:10.5px; color:var(--slate-600); font-weight:600;">Multi-Vendor Total</div>
+                <div style="font-size:16px; font-weight:800; color:var(--slate-700); text-decoration:line-through;" id="tcoFragmentedVal">₹3,950/mo</div>
+              </div>
+              <div class="panel" style="text-align:center; background:var(--airtel-red-soft); border-color:var(--airtel-red-border);">
+                <div style="font-size:10.5px; color:var(--airtel-red-dark); font-weight:600;">UdyamOne Bundle</div>
+                <div style="font-size:16px; font-weight:800; color:var(--airtel-red-dark);" id="tcoAccelVal">₹2,495/mo</div>
+              </div>
+              <div class="panel" style="text-align:center; background:var(--emerald-50); border-color:var(--emerald-border);">
+                <div style="font-size:10.5px; color:var(--emerald-700); font-weight:600;">Annual Savings</div>
+                <div style="font-size:16px; font-weight:800; color:var(--emerald-700);" id="tcoAnnualSavedVal">₹17,460/yr</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Checkout Safeguards -->
+          <div class="panel">
+            <div style="font-weight:700; font-size:13px; margin-bottom:8px;">Checkout Risk Eliminators</div>
+            <div style="display:flex; flex-direction:column; gap:8px;">
+              <div class="panel-white" style="display:flex; justify-content:space-between; align-items:center;">
+                <div>
+                  <div style="font-weight:700; font-size:12px;">GIS Fibre Feasibility Check</div>
+                  <div style="font-size:11px; color:var(--slate-500);">If fibre ports are full, auto-switches to <strong>P04 5G AirFiber</strong> (48h install).</div>
+                </div>
+                <button class="btn btn-sm btn-outline" onclick="toggleFibreFeasibilityFromQuote()" id="btnQuoteFeasibilityToggle">
+                  Simulate Fibre Full
+                </button>
+              </div>
+
+              <div class="panel-white" style="display:flex; justify-content:space-between; align-items:center;">
+                <div>
+                  <div style="font-weight:700; font-size:12px;">Contract Lock-In Switcher (Book Now, Bill Later)</div>
+                  <div style="font-size:11px; color:var(--slate-500);">Activate SIMs today and defer broadband billing up to 60 days.</div>
+                </div>
+                <select id="quoteLockInSelect" class="form-select" style="width:140px;" onchange="onLockInChange(this.value)">
+                  <option value="0">Bill Now</option>
+                  <option value="30">Defer 30d</option>
+                  <option value="60">Defer 60d</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Selected SKUs Table -->
+          <div class="panel-white">
+            <div style="font-weight:700; font-size:13px; margin-bottom:6px;">Selected Bundle Breakdown</div>
+            <div class="data-table-wrap">
+              <table class="data-table">
+                <thead>
+                  <tr><th>Service</th><th>Qty</th><th>Monthly (₹)</th><th>Install</th></tr>
+                </thead>
+                <tbody id="quoteSelectedTableBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: 25 Add-On Catalogue Grid -->
+        <div class="panel-white">
+          <div class="section-header" style="margin-bottom:8px;">
+            <div>
+              <div class="section-title">Catalogue Add-Ons (25 Products)</div>
+              <div class="section-sub">Live CPQ dependency checks and eligibility guardrails</div>
+            </div>
+            <input type="text" id="addonSearchInput" class="form-input" style="width:150px;" placeholder="Filter SKUs..." oninput="renderAddonGrid()" />
+          </div>
+          <div id="quoteAddonGrid" class="addon-grid"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 3: SMART KYC -->
+    <section id="tabPane_kyc" class="hidden">
+      <!-- Consent Banner -->
+      <div class="panel" style="background:var(--emerald-50); border-color:var(--emerald-border); margin-bottom:12px;">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:10px; flex-wrap:wrap;">
+          <div>
+            <div style="display:flex; align-items:center; gap:6px;">
+              <span class="badge badge-green">DPDP Act, 2023 Compliant</span>
+              <span class="badge badge-blue" id="kycMinimisationBadge">Data Minimisation</span>
+              <span class="badge badge-amber">72-Hr Raw Image Purge</span>
+            </div>
+            <div style="font-weight:700; font-size:13px; margin-top:4px;" id="dpdpConsentTitle">Granular Data Privacy Consent</div>
+            <div style="font-size:11.5px; color:var(--slate-700);" id="dpdpConsentBody">
+              I consent to Airtel Business processing business registrations solely for service verification.
+            </div>
+          </div>
+          <div style="display:flex; flex-direction:column; align-items:flex-end; gap:4px;">
+            <label style="display:flex; align-items:center; gap:5px; font-weight:600; font-size:11.5px; cursor:pointer;">
+              <input type="checkbox" id="dpdpConsentCheck" checked /> Consent Granted
+            </label>
+            <label style="display:flex; align-items:center; gap:5px; font-size:11px; color:var(--slate-600); cursor:pointer;">
+              <input type="checkbox" id="piiMaskToggle" checked onchange="renderCurrentKycApplicant()" /> Mask PII (27XUI******D1ZP)
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <!-- K01-K12 Applicant Selector Pills -->
+      <div style="font-weight:700; font-size:12px; margin-bottom:6px;">Inspect Case KYC Applicants (K01–K12):</div>
+      <div id="kycPillBar" class="k-pill-bar"></div>
+
+      <div class="grid-2">
+        <div style="display:flex; flex-direction:column; gap:12px;">
+          <div class="panel-white">
+            <div class="section-title" id="kycDocPanelTitle" style="margin-bottom:8px;">Uploaded Documents (K03 — Ganesh Woodcraft)</div>
+            <div id="kycDocImagesGrid" class="doc-grid"></div>
+          </div>
+
+          <!-- Live Registry Tester -->
+          <div class="panel">
+            <div style="font-weight:700; font-size:12px; margin-bottom:6px;">Live Registry Lookup (3,534 GSTINs · 2,723 Udyams)</div>
+            <div style="display:flex; gap:6px;">
+              <input type="text" id="customGstinInput" class="form-input" style="flex:1;" placeholder="Enter GSTIN..." />
+              <input type="text" id="customUdyamInput" class="form-input" style="flex:1;" placeholder="Enter Udyam..." />
+              <button class="btn btn-dark btn-sm" onclick="runCustomRegistryLookup()">Verify</button>
+            </div>
+            <div id="customLookupResultBox"></div>
+          </div>
+        </div>
+
+        <div class="panel-white">
+          <div class="section-header" style="margin-bottom:8px;">
+            <div>
+              <div style="font-size:10px; font-weight:700; color:var(--slate-500); text-transform:uppercase;" id="kycLeadMeta">Lead L03571 · Nagpur</div>
+              <div class="section-title" id="kycBizHeading">Ganesh Woodcraft</div>
+            </div>
+            <span class="badge badge-green" id="kycVerdictBadge">Approved</span>
+          </div>
+
+          <div id="kycRemediationBox"></div>
+          <div style="font-weight:700; font-size:12px; margin:8px 0 4px;">6-Stage Validation Pipeline</div>
+          <div id="kycChecksContainer" style="border:1px solid var(--slate-200); border-radius:8px; overflow:hidden; margin-bottom:12px;"></div>
+
+          <div style="font-weight:700; font-size:12px; margin-bottom:4px;">OCR vs Registry Cross-Check</div>
+          <div class="data-table-wrap">
+            <table class="data-table" id="kycCrossCheckTable"></table>
+          </div>
+
+          <div style="margin-top:12px; text-align:right;">
+            <button class="btn btn-primary btn-sm" onclick="switchTab('tracker')">
+              Proceed to Order Tracker &rarr;
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 4: ORDER TRACKER -->
+    <section id="tabPane_tracker" class="hidden">
+      <div class="section-header">
+        <div>
+          <div class="section-title">Zero-Call Split-Order Tracker &amp; One-Bill Hub</div>
+          <div class="section-sub">Track A (Day-1 Digital &lt;2h) vs Track B (Physical GPS) eliminates the 3.0× status chase calls</div>
+        </div>
+        <div style="display:flex; gap:6px;">
+          <button class="btn btn-sm btn-outline" id="btnTrackerAirfiberBridge" onclick="toggleTrackerAirfiberBridge()">
+            48h 5G AirFiber Bridge
+          </button>
+          <button class="btn btn-sm btn-dark" onclick="openSingleInvoiceModal()">
+            View Single GST Invoice
+          </button>
+        </div>
+      </div>
+
+      <!-- Fluent KPI Metric Cards (Zero Left Border Stripes) -->
+      <div class="grid-4" style="margin-bottom:14px;">
+        <div class="fluent-kpi-card">
+          <div class="fluent-kpi-top">
+            <span class="fluent-kpi-label">Track A: Digital &amp; SIM</span>
+            <span class="badge badge-green">Instant</span>
+          </div>
+          <div class="fluent-kpi-val" style="color:var(--emerald-700);">&lt; 2 Hours</div>
+          <div class="fluent-kpi-sub">vs 17.6d Legacy Serial</div>
+        </div>
+
+        <div class="fluent-kpi-card">
+          <div class="fluent-kpi-top">
+            <span class="fluent-kpi-label">Track B: Physical Install</span>
+            <span class="badge badge-blue">GPS Live</span>
+          </div>
+          <div class="fluent-kpi-val" id="trackerPhysicalEtaDays">5 Days</div>
+          <div class="fluent-kpi-sub" id="trackerBillingStartNote">Billing: 2026-07-15</div>
+        </div>
+
+        <div class="fluent-kpi-card">
+          <div class="fluent-kpi-top">
+            <span class="fluent-kpi-label">Status Chase Calls</span>
+            <span class="badge badge-red">Self-Serve</span>
+          </div>
+          <div class="fluent-kpi-val">0 Calls</div>
+          <div class="fluent-kpi-sub">vs 3.01× Baseline</div>
+        </div>
+
+        <div class="fluent-kpi-card">
+          <div class="fluent-kpi-top">
+            <span class="fluent-kpi-label">Single Desk Support</span>
+            <span class="badge badge-blue">Unified</span>
+          </div>
+          <div class="fluent-kpi-val" style="font-size:15px;">1800-103-UDYAM</div>
+          <div class="fluent-kpi-sub">1 Single Monthly Bill</div>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div style="display:flex; flex-direction:column; gap:12px;">
+          <div class="panel-white">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+              <div style="font-weight:700; font-size:13px; color:var(--slate-900);">Track A: Instant Digital Provisioning</div>
+              <span class="badge badge-green">Day-1 Live</span>
+            </div>
+            <div id="trackerTrackAContainer" class="sku-list"></div>
+          </div>
+          <div class="panel-white">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+              <div style="font-weight:700; font-size:13px; color:var(--slate-900);">Track B: Physical Installation</div>
+              <span class="badge badge-blue">GPS Tracked</span>
+            </div>
+            <div id="trackerTrackBContainer" class="sku-list"></div>
+          </div>
+        </div>
+
+        <div style="display:flex; flex-direction:column; gap:12px;">
+          <div class="panel-white">
+            <div class="section-title" style="margin-bottom:6px;">Assigned Field Engineer</div>
+            <div id="trackerEngineerCard"></div>
+          </div>
+          <div class="panel-white">
+            <div class="section-title" style="margin-bottom:6px;">Proactive WhatsApp Milestone Feed</div>
+            <div id="trackerWhatsappFeed" class="sku-list"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 5: SALES COCKPIT -->
+    <section id="tabPane_cockpit" class="hidden">
+      <div class="section-header">
+        <div>
+          <div class="section-title">Sales &amp; Partner Cockpit — 5,000 Leads Telemetry &amp; LTV Propensity</div>
+          <div class="section-sub">Ranks 4,632 unclosed leads by EV = P(Convert) × Est. MRR × 12 × (1 − P(Churn))</div>
+        </div>
+        <button class="btn btn-sm btn-primary" onclick="openPartnerQrModal()">
+          Partner Phygital QR Link
+        </button>
+      </div>
+
+      <div class="grid-4" style="margin-bottom:14px;" id="cockpitHeadlineStrip"></div>
+
+      <!-- Priority Queue -->
+      <div class="panel-white" style="margin-bottom:14px;">
+        <div class="section-header">
+          <div>
+            <div class="section-title">LTV Propensity Call Queue (4,632 Leads)</div>
+            <div class="section-sub" id="cockpitQueueSub">Top high-LTV accounts with 1-click rescue playbooks</div>
+          </div>
+          <div style="display:flex; gap:6px; flex-wrap:wrap;">
+            <select id="cockpitFilterSegment" class="form-select" onchange="fetchCockpitLeads()">
+              <option value="ALL">All Segments</option>
+              <option value="Small multi-site businesses">Multi-Site (57% MRR)</option>
+              <option value="Professional offices">Prof. Offices (21% MRR)</option>
+              <option value="Small manufacturers">Manufacturers</option>
+              <option value="Micro retail & services">Micro Retail</option>
+            </select>
+            <select id="cockpitFilterStage" class="form-select" onchange="fetchCockpitLeads()">
+              <option value="ALL">All Drop Stages</option>
+              <option value="KYC complete">Post-KYC (220)</option>
+              <option value="Quote accepted">At KYC (273)</option>
+              <option value="Needs assessed">At Quote (1,113)</option>
+              <option value="Contacted">At Contact (1,432)</option>
+            </select>
+            <input type="text" id="cockpitSearchInput" class="form-input" style="width:160px;" placeholder="Search leads..." oninput="fetchCockpitLeads()" />
+          </div>
+        </div>
+
+        <div class="data-table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Lead &amp; Business</th>
+                <th>Segment</th>
+                <th>Drop Reason</th>
+                <th>P(Conv)</th>
+                <th>Est. MRR</th>
+                <th>12M Exp. LTV</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="cockpitLeadsTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="panel-white">
+          <div style="font-weight:700; font-size:13px; margin-bottom:6px;">Segment Economics Telemetry</div>
+          <div class="data-table-wrap">
+            <table class="data-table" id="cockpitSegmentTable"></table>
+          </div>
+        </div>
+        <div class="panel-white">
+          <div style="font-weight:700; font-size:13px; margin-bottom:6px;">6 Planted Signals Uncovered</div>
+          <div id="cockpitSignalsContainer" class="sku-list"></div>
+        </div>
+      </div>
+    </section>
+  </template>
+
+  <!-- Floating Discreet WhatsApp Action Button (FAB) -->
+  <button class="wa-fab" id="waFabBtn" onclick="toggleWhatsAppDrawer()" title="Open Customer WhatsApp Bot">
+    <div class="wa-fab-pulse"></div>
+    <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0012.04 2zm5.78 14.12c-.24.67-1.39 1.28-1.92 1.36-.51.08-1.18.11-3.39-.8-2.65-1.09-4.35-3.8-4.48-3.98-.13-.18-1.08-1.44-1.08-2.75s.68-1.95.92-2.22c.24-.27.53-.34.7-.34.18 0 .36 0 .52.01.17.01.4.06.6.53.22.51.75 1.83.82 1.96.07.13.11.29.02.47-.09.18-.14.29-.27.45-.13.16-.28.36-.4.48-.13.13-.27.27-.12.53.15.27.68 1.12 1.46 1.81 1 .89 1.85 1.17 2.11 1.3.27.13.42.11.58-.07.16-.18.68-.79.86-1.06.18-.27.36-.22.6-.13.24.09 1.55.73 1.82.86.27.13.44.2.51.31.06.11.06.65-.18 1.32z"/></svg>
+    <span>Customer Bot</span>
+  </button>
+
+  <!-- WhatsApp Floating Conversation Drawer with Interactive Voice Story Mode -->
+  <aside class="wa-drawer" id="waDrawer">
+    <div class="wa-header">
+      <div style="display:flex; align-items:center; gap:8px;">
+        <div style="width:28px; height:28px; border-radius:50%; background:var(--airtel-red); color:#fff; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:12px;">A</div>
+        <div>
+          <div style="font-size:12.5px; font-weight:700;">Airtel UdyamOne Official</div>
+          <div style="font-size:10px; opacity:0.9;">Verified Business · 1800-103-UDYAM</div>
+        </div>
+      </div>
+      <button class="btn btn-sm" style="background:rgba(0,0,0,0.2); color:#fff; border:none;" onclick="toggleWhatsAppDrawer()">✕</button>
+    </div>
+
+    <!-- Interactive Voice Note Story Mode Bar -->
+    <div class="wa-voice-bar">
+      <span style="font-size:10px; font-weight:700; color:var(--slate-500);">Voice Note Demo:</span>
+      <button class="wa-voice-pill" onclick="simulateWhatsAppVoiceStory('hindi_kirana')">▶ Hindi Kirana</button>
+      <button class="wa-voice-pill" onclick="simulateWhatsAppVoiceStory('tamil_clinic')">▶ Tamil Clinic</button>
+      <button class="wa-voice-pill" onclick="simulateWhatsAppVoiceStory('punjabi_factory')">▶ Punjabi Factory</button>
+    </div>
+
+    <div class="wa-messages" id="waMessagesList"></div>
+
+    <div style="padding:8px; background:#f0f0f0; display:flex; gap:6px; border-top:1px solid var(--slate-200);">
+      <input type="text" id="waInputBox" class="form-input" style="flex:1;" placeholder="Type message in any language..." onkeydown="if(event.key==='Enter') sendWhatsAppMessage()" />
+      <button class="btn btn-sm btn-primary" onclick="sendWhatsAppMessage()">Send</button>
+    </div>
+  </aside>
+
+  <!-- Universal Modal / Lightbox -->
+  <div class="modal-backdrop" id="appModal" onclick="if(event.target===this) closeModal()">
+    <div class="modal-card">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+        <div style="font-weight:800; font-size:15px;" id="modalTitle">Modal Title</div>
+        <button class="btn btn-sm btn-outline" onclick="closeModal()">✕</button>
+      </div>
+      <div id="modalBodyContent"></div>
+    </div>
+  </div>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>
