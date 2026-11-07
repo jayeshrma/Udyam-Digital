@@ -25,12 +25,38 @@ from engine.propensity_cockpit import PropensityCockpitEngine
 
 DATA_DIR = os.path.join(BASE_DIR, "data")
 if not os.path.exists(os.path.join(DATA_DIR, "product_catalogue.csv")):
-    parent_data = os.path.join(os.path.dirname(BASE_DIR), "YTL_TrackA_Udyam_Digital_Data")
-    if os.path.exists(os.path.join(parent_data, "product_catalogue.csv")):
-        DATA_DIR = parent_data
+    for cand in [
+        os.path.join(os.getcwd(), "data"),
+        os.path.join(os.path.dirname(os.path.abspath(__file__)), "data"),
+        "/var/task/data",
+        os.path.join(os.path.dirname(BASE_DIR), "YTL_TrackA_Udyam_Digital_Data"),
+    ]:
+        if os.path.exists(os.path.join(cand, "product_catalogue.csv")):
+            DATA_DIR = cand
+            break
 
 STATIC_DIR = os.path.join(BASE_DIR, "static")
+if not os.path.exists(STATIC_DIR):
+    for cand in [
+        os.path.join(os.getcwd(), "static"),
+        os.path.join(os.path.dirname(os.path.abspath(__file__)), "static"),
+        "/var/task/static",
+    ]:
+        if os.path.exists(cand):
+            STATIC_DIR = cand
+            break
+
 DELIVERABLES_DIR = os.path.join(BASE_DIR, "deliverables")
+if not os.path.exists(DELIVERABLES_DIR):
+    for cand in [
+        os.path.join(os.getcwd(), "deliverables"),
+        os.path.join(os.path.dirname(os.path.abspath(__file__)), "deliverables"),
+        "/var/task/deliverables",
+    ]:
+        if os.path.exists(cand):
+            DELIVERABLES_DIR = cand
+            break
+
 KYC_IMAGES_DIR = os.path.join(DATA_DIR, "kyc_documents")
 
 print(f"[UdyamOne] Loading datasets from: {DATA_DIR} ...")
@@ -162,25 +188,43 @@ async def api_tracker_generate(request: Request):
 @app.get("/")
 @app.get("/index.html")
 async def serve_index():
-    index_path = os.path.join(STATIC_DIR, "index.html")
-    if os.path.isfile(index_path):
-        return FileResponse(index_path, media_type="text/html")
+    for p in [
+        os.path.join(BASE_DIR, "index.html"),
+        os.path.join(STATIC_DIR, "index.html"),
+        os.path.join(os.getcwd(), "index.html"),
+        "/var/task/index.html",
+        "/var/task/static/index.html",
+    ]:
+        if os.path.isfile(p):
+            return FileResponse(p, media_type="text/html")
     return JSONResponse({"error": "index.html not found"}, status_code=404)
 
 
 @app.get("/favicon.ico")
 async def serve_favicon_ico():
-    ico_path = os.path.join(STATIC_DIR, "favicon.ico")
-    if os.path.isfile(ico_path):
-        return FileResponse(ico_path, media_type="image/x-icon")
+    for p in [
+        os.path.join(BASE_DIR, "favicon.ico"),
+        os.path.join(STATIC_DIR, "favicon.ico"),
+        os.path.join(os.getcwd(), "favicon.ico"),
+        "/var/task/favicon.ico",
+        "/var/task/static/favicon.ico",
+    ]:
+        if os.path.isfile(p):
+            return FileResponse(p, media_type="image/x-icon")
     return JSONResponse({"error": "favicon.ico not found"}, status_code=404)
 
 
 @app.get("/favicon.svg")
 async def serve_favicon_svg():
-    svg_path = os.path.join(STATIC_DIR, "favicon.svg")
-    if os.path.isfile(svg_path):
-        return FileResponse(svg_path, media_type="image/svg+xml")
+    for p in [
+        os.path.join(BASE_DIR, "favicon.svg"),
+        os.path.join(STATIC_DIR, "favicon.svg"),
+        os.path.join(os.getcwd(), "favicon.svg"),
+        "/var/task/favicon.svg",
+        "/var/task/static/favicon.svg",
+    ]:
+        if os.path.isfile(p):
+            return FileResponse(p, media_type="image/svg+xml")
     return JSONResponse({"error": "favicon.svg not found"}, status_code=404)
 
 

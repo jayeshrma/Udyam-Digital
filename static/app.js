@@ -129,6 +129,15 @@ const JUDGE_PRESETS = {
 
 window.addEventListener("DOMContentLoaded", async () => {
   mountModulesIntoDOM("studio");
+  try {
+    await applyJudgeScenario("micro_nogst", false);
+    renderKycPillBar();
+    await selectKycApplicant("K06");
+    renderCockpitDashboard();
+    seedWhatsAppBot();
+  } catch (e) {
+    console.warn("Immediate render fallback:", e);
+  }
   await bootstrapApp();
 });
 

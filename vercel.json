@@ -1,7 +1,20 @@
 {
+  "functions": {
+    "server.py": {
+      "includeFiles": "data/**"
+    }
+  },
   "rewrites": [
     {
-      "source": "/(.*)",
+      "source": "/api/(.*)",
+      "destination": "/server.py"
+    },
+    {
+      "source": "/docs",
+      "destination": "/server.py"
+    },
+    {
+      "source": "/openapi.json",
       "destination": "/server.py"
     }
   ]
