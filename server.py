@@ -1,20 +1,18 @@
 """
-Airtel UdyamOne (Project Udyam Digital) — Zero-Friction Backend Server.
-Runs out-of-the-box on any Python 3.9+ environment with ZERO external pip dependencies required.
-Serves the Dual-Mode Mobile/Desktop Web App, all 47 KYC Document Images, Deliverables, and REST APIs.
-
-Usage:
-    python server.py
-Then open http://localhost:8000 in your browser.
+Airtel UdyamOne (Project Udyam Digital) — Enterprise Backend Server.
+Powered by FastAPI (native Vercel, Docker & ASGI production support) with Uvicorn.
+Serves the Dual-Mode Mobile/Desktop Web App, 47 KYC Document Images, Deliverables, and REST APIs.
 """
 from __future__ import annotations
-import json
-import mimetypes
+
 import os
 import sys
-from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
-from typing import Any, Dict
-from urllib.parse import parse_qs, urlparse
+from typing import Any, Dict, Optional
+
+from fastapi import FastAPI, Request, Query
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse, JSONResponse
+from fastapi.staticfiles import StaticFiles
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 if BASE_DIR not in sys.path:
@@ -25,10 +23,8 @@ from engine.smart_kyc import SmartKYCEngine
 from engine.order_tracker import OrderTrackerEngine
 from engine.propensity_cockpit import PropensityCockpitEngine
 
-
 DATA_DIR = os.path.join(BASE_DIR, "data")
 if not os.path.exists(os.path.join(DATA_DIR, "product_catalogue.csv")):
-    # Fallback to parent workspace dataset folder if needed
     parent_data = os.path.join(os.path.dirname(BASE_DIR), "YTL_TrackA_Udyam_Digital_Data")
     if os.path.exists(os.path.join(parent_data, "product_catalogue.csv")):
         DATA_DIR = parent_data
@@ -42,190 +38,181 @@ ADVISOR_ENGINE = CPQAdvisorEngine(DATA_DIR)
 KYC_ENGINE = SmartKYCEngine(DATA_DIR)
 TRACKER_ENGINE = OrderTrackerEngine()
 COCKPIT_ENGINE = PropensityCockpitEngine(DATA_DIR)
-print(
-    f"[UdyamOne] Loaded {len(ADVISOR_ENGINE.product_list)} products, "
-    f"{len(KYC_ENGINE.gstin_registry)} GSTIN records, "
-    f"{len(KYC_ENGINE.udyam_registry)} Udyam records, and "
-    f"{len(COCKPIT_ENGINE.leads)} SMB leads."
+
+# Top-level FastAPI instance exported for Vercel & ASGI runners
+app = FastAPI(
+    title="Airtel UdyamOne",
+    description="Enterprise Track A · MSME Digital Needs Advisor & Deterministic CPQ",
+    version="1.0.0",
 )
 
+# CORS Middleware
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
-class UdyamRequestHandler(BaseHTTPRequestHandler):
-    def log_message(self, format: str, *args: Any) -> None:
-        # Clean, concise request logging
-        sys.stdout.write(f"[API] {self.address_string()} - {format % args}\n")
+# ============================================================================
+# REST API ENDPOINTS
+# ============================================================================
 
-    def _send_json(self, data: Any, status: int = 200) -> None:
-        raw = json.dumps(data, ensure_ascii=False).encode("utf-8")
-        self.send_response(status)
-        self.send_header("Content-Type", "application/json; charset=utf-8")
-        self.send_header("Content-Length", str(len(raw)))
-        self.send_header("Access-Control-Allow-Origin", "*")
-        self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
-        self.send_header("Access-Control-Allow-Headers", "Content-Type")
-        self.end_headers()
-        self.wfile.write(raw)
+@app.get("/api/bootstrap")
+async def api_bootstrap():
+    default_bundle = ADVISOR_ENGINE.recommend_bundle({
+        "business_name": "Sunrise General Store",
+        "business_type": "Kirana & Supermarket",
+        "segment": "Micro retail & services",
+        "city": "Visakhapatnam",
+        "city_tier": 2,
+        "employee_count": 4,
+        "num_sites": 1,
+        "has_gstin": False,
+        "fibre_feasible": True,
+        "language": "Hindi",
+    })
+    default_tracker = TRACKER_ENGINE.generate_order_plan({
+        "line_items": default_bundle["line_items"],
+        "profile": default_bundle["profile"],
+        "pricing_summary": default_bundle["pricing_summary"],
+    })
+    return {
+        "catalogue": ADVISOR_ENGINE.product_list,
+        "languages": list(LANGUAGE_PACKS.keys()),
+        "language_packs": LANGUAGE_PACKS,
+        "default_bundle": default_bundle,
+        "default_tracker": default_tracker,
+        "kyc_applicants": KYC_ENGINE.evaluate_all_applicants(),
+        "analytics": COCKPIT_ENGINE.analytics_cache,
+        "unclosed_queue": COCKPIT_ENGINE.query_unclosed_leads(limit=40),
+    }
 
-    def _serve_file(self, file_path: str) -> None:
-        if not os.path.isfile(file_path):
-            self._send_json({"error": f"File not found: {os.path.basename(file_path)}"}, status=404)
-            return
-        mime, _ = mimetypes.guess_type(file_path)
-        if not mime:
-            mime = "application/octet-stream"
-        if mime.startswith("text/") or mime in ["application/javascript", "application/json"]:
-            mime += "; charset=utf-8"
-        with open(file_path, "rb") as f:
-            content = f.read()
-        self.send_response(200)
-        self.send_header("Content-Type", mime)
-        self.send_header("Content-Length", str(len(content)))
-        self.send_header("Cache-Control", "no-cache")
-        self.end_headers()
-        self.wfile.write(content)
 
-    def do_OPTIONS(self) -> None:
-        self.send_response(204)
-        self.send_header("Access-Control-Allow-Origin", "*")
-        self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
-        self.send_header("Access-Control-Allow-Headers", "Content-Type")
-        self.end_headers()
+@app.get("/api/kyc/applicants")
+async def api_kyc_applicants():
+    return {"applicants": KYC_ENGINE.evaluate_all_applicants()}
 
-    def do_GET(self) -> None:
-        parsed = urlparse(self.path)
-        path = parsed.path
-        qs = parse_qs(parsed.query)
 
-        if path == "/api/bootstrap":
-            default_bundle = ADVISOR_ENGINE.recommend_bundle({
-                "business_name": "Sunrise General Store",
-                "business_type": "Kirana & Supermarket",
-                "segment": "Micro retail & services",
-                "city": "Visakhapatnam",
-                "city_tier": 2,
-                "employee_count": 4,
-                "num_sites": 1,
-                "has_gstin": False,
-                "fibre_feasible": True,
-                "language": "Hindi",
-            })
-            default_tracker = TRACKER_ENGINE.generate_order_plan({
-                "line_items": default_bundle["line_items"],
-                "profile": default_bundle["profile"],
-                "pricing_summary": default_bundle["pricing_summary"],
-            })
-            self._send_json({
-                "catalogue": ADVISOR_ENGINE.product_list,
-                "languages": list(LANGUAGE_PACKS.keys()),
-                "language_packs": LANGUAGE_PACKS,
-                "default_bundle": default_bundle,
-                "default_tracker": default_tracker,
-                "kyc_applicants": KYC_ENGINE.evaluate_all_applicants(),
-                "analytics": COCKPIT_ENGINE.analytics_cache,
-                "unclosed_queue": COCKPIT_ENGINE.query_unclosed_leads(limit=40),
-            })
-            return
+@app.get("/api/cockpit/analytics")
+async def api_cockpit_analytics():
+    return COCKPIT_ENGINE.analytics_cache
 
-        if path == "/api/kyc/applicants":
-            self._send_json({"applicants": KYC_ENGINE.evaluate_all_applicants()})
-            return
 
-        if path == "/api/cockpit/analytics":
-            self._send_json(COCKPIT_ENGINE.analytics_cache)
-            return
+@app.get("/api/cockpit/leads")
+async def api_cockpit_leads(
+    segment: str = Query("ALL"),
+    stage: str = Query("ALL"),
+    owner: str = Query("ALL"),
+    search: str = Query(""),
+    limit: int = Query(50),
+):
+    return COCKPIT_ENGINE.query_unclosed_leads(segment, stage, owner, search, limit)
 
-        if path == "/api/cockpit/leads":
-            segment = qs.get("segment", ["ALL"])[0]
-            stage = qs.get("stage", ["ALL"])[0]
-            owner = qs.get("owner", ["ALL"])[0]
-            search = qs.get("search", [""])[0]
-            limit = int(qs.get("limit", ["50"])[0])
-            self._send_json(COCKPIT_ENGINE.query_unclosed_leads(segment, stage, owner, search, limit))
-            return
 
-        # Static & File Routing
-        if path in ["/", "/index.html"]:
-            self._serve_file(os.path.join(STATIC_DIR, "index.html"))
-            return
+@app.post("/api/advisor/recommend")
+async def api_advisor_recommend(request: Request):
+    try:
+        payload = await request.json()
+    except Exception:
+        payload = {}
+    return ADVISOR_ENGINE.recommend_bundle(payload)
 
-        if path.startswith("/static/"):
-            rel = path[len("/static/"):].lstrip("/\\")
-            self._serve_file(os.path.join(STATIC_DIR, rel))
-            return
 
-        if path.startswith("/kyc_documents/"):
-            rel = os.path.basename(path)
-            self._serve_file(os.path.join(KYC_IMAGES_DIR, rel))
-            return
+@app.post("/api/kyc/verify")
+async def api_kyc_verify(request: Request):
+    try:
+        payload = await request.json()
+    except Exception:
+        payload = {}
+    app_id = payload.get("applicant_id", "K03")
+    req_gst = bool(payload.get("bundle_requires_gstin", True))
+    auto_rem = bool(payload.get("auto_remediate", False))
+    return KYC_ENGINE.evaluate_applicant(app_id, bundle_requires_gstin=req_gst, auto_remediate=auto_rem)
 
-        if path.startswith("/deliverables/"):
-            rel = path[len("/deliverables/"):].lstrip("/\\")
-            self._serve_file(os.path.join(DELIVERABLES_DIR, rel))
-            return
 
-        # Fallback inside static folder
-        candidate = os.path.join(STATIC_DIR, path.lstrip("/\\"))
-        if os.path.isfile(candidate):
-            self._serve_file(candidate)
-            return
+@app.post("/api/kyc/lookup")
+async def api_kyc_lookup(request: Request):
+    try:
+        payload = await request.json()
+    except Exception:
+        payload = {}
+    gstin = payload.get("gstin", "")
+    udyam = payload.get("udyam_number", "")
+    return {
+        "gstin_lookup": KYC_ENGINE.lookup_gstin(gstin) if gstin else None,
+        "udyam_lookup": KYC_ENGINE.lookup_udyam(udyam) if udyam else None,
+    }
 
-        self._send_json({"error": f"Unknown route {path}"}, status=404)
 
-    def do_POST(self) -> None:
-        parsed = urlparse(self.path)
-        path = parsed.path
-        length = int(self.headers.get("Content-Length", "0"))
-        body_bytes = self.rfile.read(length) if length > 0 else b"{}"
-        try:
-            payload: Dict[str, Any] = json.loads(body_bytes.decode("utf-8"))
-        except Exception:
-            payload = {}
+@app.post("/api/tracker/generate")
+async def api_tracker_generate(request: Request):
+    try:
+        payload = await request.json()
+    except Exception:
+        payload = {}
+    return TRACKER_ENGINE.generate_order_plan(payload)
 
-        if path == "/api/advisor/recommend":
-            res = ADVISOR_ENGINE.recommend_bundle(payload)
-            self._send_json(res)
-            return
 
-        if path == "/api/kyc/verify":
-            app_id = payload.get("applicant_id", "K03")
-            req_gst = bool(payload.get("bundle_requires_gstin", True))
-            auto_rem = bool(payload.get("auto_remediate", False))
-            res = KYC_ENGINE.evaluate_applicant(app_id, bundle_requires_gstin=req_gst, auto_remediate=auto_rem)
-            self._send_json(res)
-            return
+# ============================================================================
+# ROOT & STATIC FILE SERVING
+# ============================================================================
 
-        if path == "/api/kyc/lookup":
-            gstin = payload.get("gstin", "")
-            udyam = payload.get("udyam_number", "")
-            self._send_json({
-                "gstin_lookup": KYC_ENGINE.lookup_gstin(gstin) if gstin else None,
-                "udyam_lookup": KYC_ENGINE.lookup_udyam(udyam) if udyam else None,
-            })
-            return
+@app.get("/")
+@app.get("/index.html")
+async def serve_index():
+    index_path = os.path.join(STATIC_DIR, "index.html")
+    if os.path.isfile(index_path):
+        return FileResponse(index_path, media_type="text/html")
+    return JSONResponse({"error": "index.html not found"}, status_code=404)
 
-        if path == "/api/tracker/generate":
-            res = TRACKER_ENGINE.generate_order_plan(payload)
-            self._send_json(res)
-            return
 
-        self._send_json({"error": f"Unknown POST route {path}"}, status=404)
+@app.get("/favicon.ico")
+async def serve_favicon_ico():
+    ico_path = os.path.join(STATIC_DIR, "favicon.ico")
+    if os.path.isfile(ico_path):
+        return FileResponse(ico_path, media_type="image/x-icon")
+    return JSONResponse({"error": "favicon.ico not found"}, status_code=404)
 
+
+@app.get("/favicon.svg")
+async def serve_favicon_svg():
+    svg_path = os.path.join(STATIC_DIR, "favicon.svg")
+    if os.path.isfile(svg_path):
+        return FileResponse(svg_path, media_type="image/svg+xml")
+    return JSONResponse({"error": "favicon.svg not found"}, status_code=404)
+
+
+# Mount static assets directory
+if os.path.exists(STATIC_DIR):
+    app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
+
+# Mount deliverables directory
+if os.path.exists(DELIVERABLES_DIR):
+    app.mount("/deliverables", StaticFiles(directory=DELIVERABLES_DIR), name="deliverables")
+
+# Mount KYC benchmark documents directory
+if os.path.exists(KYC_IMAGES_DIR):
+    app.mount("/kyc_documents", StaticFiles(directory=KYC_IMAGES_DIR), name="kyc_documents")
+
+
+# ============================================================================
+# LOCAL DEVELOPMENT ENTRYPOINT
+# ============================================================================
 
 def run_server(port: int = 8000) -> None:
-    server_address = ("0.0.0.0", port)
-    httpd = ThreadingHTTPServer(server_address, UdyamRequestHandler)
+    import uvicorn
+
     print(f"\n======================================================================")
-    print(f" 🚀 Airtel UdyamOne (Project Udyam Digital) Server Running!")
+    print(f" 🚀 Airtel UdyamOne FastAPI Server Running on Uvicorn!")
     print(f" 🌐 Local Web & Mobile Studio UI : http://localhost:{port}")
     print(f" 📊 Architecture Diagram         : http://localhost:{port}/deliverables/Architecture_Diagram.html")
     print(f" 🔒 1-Page DPDP Privacy Note     : http://localhost:{port}/deliverables/Privacy_and_Security_Note.html")
     print(f" 📑 10-Slide Business Case Deck  : http://localhost:{port}/deliverables/Business_Case_Deck.html")
+    print(f" 📖 Interactive OpenAPI Docs     : http://localhost:{port}/docs")
     print(f"======================================================================\n")
-    try:
-        httpd.serve_forever()
-    except KeyboardInterrupt:
-        print("\n[UdyamOne] Shutting down server.")
-        httpd.server_close()
+    uvicorn.run(app, host="0.0.0.0", port=port, log_level="info")
 
 
 if __name__ == "__main__":

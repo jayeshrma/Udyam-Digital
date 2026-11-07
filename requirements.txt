@@ -1,5 +1,2 @@
-# Zero external pip dependencies required to run server.py or tests/test_suite.py!
-# Runs natively on Python 3.9+ standard library (http.server, json, csv, zipfile, xml).
-# Optional packages if deploying behind an ASGI production gateway:
-# fastapi>=0.110.0
-# uvicorn>=0.29.0
+fastapi>=0.110.0
+uvicorn>=0.29.0
