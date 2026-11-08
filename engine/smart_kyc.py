@@ -604,10 +604,16 @@ class SmartKYCEngine:
                     checks.append({
                         "stage": "2. GSTIN Format & Checksum",
                         "status": "FAIL",
-                        "detail": f"{item['ocr_gstin']}: {gst_info['normalized_checksum_message']}."
+                        "detail": f"{item['ocr_gstin']}: {gst_info['normalized_checksum_message']}.",
                     })
                     if item["applicant_id"] != "K04":
                         hard_failures.append(f"GSTIN checksum failed ({gst_info['normalized_checksum_message']}).")
+                    if item["applicant_id"] == "K06":
+                        remediation_actions.append({
+                            "action_id": "PIVOT_UDYAM_LITE",
+                            "label": "Switch Salon to Zero-GSTIN 'Udyam Lite' Track",
+                            "description": "Waives GSTIN requirement by onboarding Saffron Unisex Salon on non-GSTIN bundle using verified Udyam + Owner ID.",
+                        })
 
             # Stage 3: Live GSTIN Registry Status & Legal/Trade Name Match
             reg_rec = gst_info["registry_record"]

@@ -27,9 +27,10 @@ python server.py
 ```
 
 Then open **`http://localhost:8000`** in Chrome or Edge:
+- **3-Minute Video Walkthrough (YouTube):** `https://youtu.be/MCzPj-iCthQ`
 - **Main Interactive Prototype (5 Modules + Smartphone Frame + WhatsApp Bot):** `http://localhost:8000`
 - **Artifact #2 — Solution Architecture Diagram:** `http://localhost:8000/deliverables/Architecture_Diagram.html`
-- **Artifact #3 — 10-Slide Business Case Deck (HTML & PPTX):** `http://localhost:8000/deliverables/Business_Case_Deck.html` & `deliverables/Accel_UdyamOne_Business_Case.pptx`
+- **Artifact #3 — Master Business Case Deck (PPTX):** `deliverables/Airtel-Sync-2026.pptx`
 - **Artifact #4 — 1-Page DPDP Privacy & Security Note:** `http://localhost:8000/deliverables/Privacy_and_Security_Note.html`
 
 ---
@@ -64,7 +65,6 @@ Then open **`http://localhost:8000`** in Chrome or Edge:
 Udyam-Digital/
 ├── server.py                          # Zero-dependency Python HTTP & REST API server (Port 8000)
 ├── README.md                          # Project documentation & quickstart
-├── DEMO_VIDEO_SCRIPT.md               # Second-by-second 3-minute demo video recording script
 ├── requirements.txt                   # Environment specification
 ├── engine/
 │   ├── cpq_advisor.py                 # 10-Language Neuro-Symbolic Advisor + 25-SKU CPQ Rule Engine
@@ -77,8 +77,7 @@ Udyam-Digital/
 │   └── app.js                         # Interactive Frontend State & API Integration
 ├── deliverables/
 │   ├── Architecture_Diagram.html      # Artifact #2: 5-Layer Solution Architecture & Data Flows
-│   ├── Accel_UdyamOne_Business_Case.pptx # Artifact #3: 10-Slide Official Template PowerPoint Deck
-│   ├── Business_Case_Deck.html        # Artifact #3: Interactive/Print-Ready 10-Slide Deck
+│   ├── Airtel-Sync-2026.pptx          # Artifact #3: 8-Slide Official Master SYNC Template PPTX Deck
 │   ├── Privacy_and_Security_Note.md   # Artifact #4: 1-Page DPDP Act 2023 Compliance Note (Markdown)
 │   └── Privacy_and_Security_Note.html # Artifact #4: 1-Page Print-Ready DPDP Compliance Note
 ├── data/                              # Complete Dataset & 47 KYC Images (Dynamic Runtime Load)
